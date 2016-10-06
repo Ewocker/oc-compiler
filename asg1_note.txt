@@ -1,0 +1,95 @@
+write:
+	main.cpp
+
+copy:
+	auxilib.cpp/.h
+	stringset.cpp/.h
+	Makefile(modify)
+	cppstrok.cpp
+
+download: (grading)
+	mk.build	-> for compile
+	mk.test		-> for run
+
+Score.asg1!!! important!!!
+
+run mk.build which is a make command, compiles all files together
+	then run mk.tests which will generate the rest of the file.
+
+all the oc files are in oc-programs on teh websites. u can run the program using,
+		oc 01-hello.oc
+
+
+Notes:
+	Compiler:
+
+		Source Language
+				|
+		Preprocessor (asg1)
+				|
+		Lexical Analyzer (Scanner asg2)
+				|
+		Syntax Analyzer (Parser asg3)
+				|
+		Machine Code
+
+
+Pre-processor
+	content	(put in)
+		lines (asgs)
+		pipe	popen		}
+		tokenize each lines }->both from cppstrok.cpp
+		pipe close
+
+main.cpp:  (find example8 will help a lot)
+	1. scan_options:
+			get_opt (3 points)   -D -@ -ly
+			ex. oc [-ly 01-hello.oc]	[]is the options
+										use switch statement
+							find example8 in website which is similar
+
+	2. make sure input suffix is .oc
+		print error if not (print to 01-hello.err by mk.tests)
+							mk.tests (.err  and  .tests should contain nothing)
+							.str will use intern-strings  &  dump stringset
+
+	3. read in inputfile
+			use file io
+
+	4. filter input through cpp-preprocessor
+			input are strings
+			use function cpplines -> to tokenize
+				1) put string in a pipe open (pipon in cppstrotok.cpp) 
+				2) cpplines -> tokenize strings -> string -> hash table -> close pipe -> now u have stringseyt hash table.
+
+	5. create .str file:
+			01-hello.oc => 01-hello.str   find function
+
+	6. open .str file
+			dumpstringset (.str) FILE*
+
+To submit:
+	main.cpp
+	auxilib.cpp/.h -> debugs function will be called here (for asg2)
+	stringset.cpp/.h (internstring  dumpfile)
+	Makefile
+	Readme
+	(do not need to submit cppstrok, instead copy into main)
+	(Partner)
+
+Grade acoording on Scrore.asg1 file
+	*90 - 96 will hve .err file
+
+
+work flow:
+	download
+		|
+	main
+		|
+	Makefile
+		|
+	mk.build
+		|
+	mk.tests
+		|
+	results
