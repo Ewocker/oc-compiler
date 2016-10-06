@@ -9,7 +9,7 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
 
 #include "astree.h"
 #include "emitter.h"
