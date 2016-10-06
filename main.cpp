@@ -14,6 +14,7 @@ using std::cout;    // for some reason the above namespace does not work for cou
 #include "stringset.h"
 
 void usage(string program);
+bool isOcFile(string file);
 
 int main (int argc, char* argv[]){
     
@@ -54,12 +55,21 @@ int main (int argc, char* argv[]){
         cerr << ("Only one program file is allowed.\n");
     }
     
-    string *infile = argv[optind];
-    string
-    
+    string infile = argv[optind];
+    if(!isOcFile(infile)){
+        cerr << "InputFileError: file '" << infile << "' is not an oc program.\n";
+    }
     
 }
 
+bool isOcFile(string file){
+    int n = file.size();
+    bool condition = (file[n-1] == 'c')&&(file[n-2] == 'o')&&(file[n-3] == '.');
+    if(condition){
+        return true;
+    }
+    return false;
+}
 
 // Display Usage, not require
 void usage(string program){
