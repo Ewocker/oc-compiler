@@ -18,6 +18,7 @@ bool isOcFile(string file);
 
 int main (int argc, char* argv[]){
     
+    /*Options*/
     for (;;) {
         int opt = getopt(argc, argv, "@D:lyh");
         if (opt == EOF) break;  //End Of File
@@ -49,15 +50,19 @@ int main (int argc, char* argv[]){
 //        cout << j << ": " << argv[j] << endl;
 //    }
     
+    /*Check input and suffix*/
     if (optind == argc) {
         cerr <<("Please specify a program file.\n");
+        return 1;
     } else if (optind + 1 < argc){
         cerr << ("Only one program file is allowed.\n");
+        return 1;
     }
     
     string infile = argv[optind];
     if(!isOcFile(infile)){
         cerr << "InputFileError: file '" << infile << "' is not an oc program.\n";
+        return 1;
     }
     
 }
