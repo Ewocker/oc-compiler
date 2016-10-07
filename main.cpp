@@ -14,17 +14,25 @@ using std::cout;    // for some reason the above namespace does not work for cou
 #include "stringset.h"
 
 /*helper*/  void usage(string program);
-/*suffix*/  bool isOcFile(string file);
 /*Options*/ int scan_opt(int argc, char* argv[]);
 /*check input*/ void check_input(int optIndex, int argc);
 /*check suffix*/void check_suffix(int optIndex, char* argv[]);
-
+/*is.oc*/  bool isOcFile(string file);
+/*rewrite ext*/ string change_ext(string inFile);
 
 int main (int argc, char* argv[]){
     int optIndex = scan_opt(argc, argv);
     check_input(optIndex, argc);
     check_suffix(optIndex, argv);
+    string inFile = argv[optIndex];
+    string outFile = change_ext(inFile);
+    cout << outFile << endl;
+}
 
+/*rewrite ext*/
+string change_ext(string inFile){
+    size_t found = inFile.find_last_of(".");
+    return inFile.substr(0,found) + ".str";
 }
 
 /*check suffix*/
@@ -34,7 +42,15 @@ void check_suffix(int optIndex, char* argv[]){
         cerr << "InputFileError: file '" << infile << "' is not an oc program.\n";
         exit(2);
     }
+}
 
+/*is .oc*/
+bool isOcFile(string file){
+    size_t found = file.find_last_of(".");
+    if (found == string::npos || file.substr(found) != ".oc"){
+        return false;
+    }
+    return true;
 }
 
 /*check input*/
@@ -81,15 +97,6 @@ int scan_opt(int argc, char* argv[]){
     //        cout << j << ": " << argv[j] << endl;
     //    }
     return optind;
-}
-
-/*suffix*/
-bool isOcFile(string file){
-    size_t found = file.find_last_of(".");
-    if (found == string::npos || file.substr(found) != ".oc"){
-        return false;
-    }
-    return true;
 }
 
 /*helper*/
