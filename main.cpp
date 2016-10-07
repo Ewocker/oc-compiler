@@ -10,14 +10,15 @@ using std::cout;    // for some reason the above namespace does not work for cou
 #include <string.h> // for string function ex.strlen()
 #include <unistd.h> // for getopt
 
-#include "stringset.h"
+#include "string_set.h"
 #include "auxlib.h"
 
 using namespace std;    // std::string can now be called as string
 
-
+#define LINESIZE 1024
 const string cpp_name = "/usr/bin/cpp";
 string cpp_command;
+FILE* yyin; //yyin is the pipe of inFile
 
 
 /*helper*/  void usage(string program);
@@ -28,6 +29,10 @@ string cpp_command;
 /*rewrite ext*/ string change_ext(string inFile);
 /*test file accessibility*/ void test_access_file(char* file);
 
+/*from strtok.cpp*/ void cpp_popen (const char* filename);
+/*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
+/*from strtok.cpp*/ void cpp_pclose();
+/*from strtok.cpp*/ void chomp (char* string, char delim);
 
 int main (int argc, char* argv[]){
     int optIndex = scan_opt(argc, argv);
@@ -39,67 +44,13 @@ int main (int argc, char* argv[]){
     
     test_access_file(inFilename);
     
+    cpp_popen(inFilename);
+    cpplines(yyin, inFilename);
+    cpp_pclose();
 }
 
 
 
-
-
-const string cpp_name = "/usr/bin/cpp";
-string cpp_command;
-
-// Open a pipe from the C preprocessor.
-// Exit failure if can't.
-// Assigns opened pipe to FILE* yyin.
-void cpp_popen (const char* filename) {
-    cpp_command = cpp_name + " " + filename;
-    yyin = popen (cpp_command.c_str(), "r");
-    if (yyin == NULL) {
-        syserrprintf (cpp_command.c_str());
-        exit (exec::exit_status);
-    }else {
-        if (yy_flex_debug) {
-            fprintf (stderr, "-- popen (%s), fileno(yyin) = %d\n",
-                     cpp_command.c_str(), fileno (yyin));
-        }
-        lexer::newfilename (cpp_command);
-    }
-}
-
-
-/* calls the C pre-processor, tokenizes the output,
- * and adds it to the stringset. */
-static void cpplines (FILE* pipe, char* filename)
-{
-    int linenr = 1;
-    char inputname[LINESIZE];
-    strcpy (inputname, filename);
-    for (;;) {
-        /* get the line */
-        char buffer[LINESIZE];
-        char* fgets_rc = fgets (buffer, LINESIZE, pipe);
-        if (fgets_rc == NULL) break;
-        /* remove the end whitespace */
-        chomp (buffer, '\n');
-        /* check for pre-processor directives */
-        int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
-                                &linenr, filename);
-        if (sscanf_rc == 2) {
-            continue;
-        }
-        /* tokenize the line */
-        char* savepos = NULL;
-        char* bufptr = buffer;
-        for (int tokenct = 1;; ++tokenct) {
-            char* token = strtok_r (bufptr, " \t\n", &savepos);
-            bufptr = NULL;
-            if (token == NULL) break;
-            /* add to stringset */
-            intern_stringset(token);
-        }
-        ++linenr;
-    }
-}
 
 /*test file accessibility*/
 void test_access_file(char* file){
@@ -189,4 +140,92 @@ void usage(string program){
     cout << "usage:" << program << " [-D <define>] [-yl] [-h](usage) <source file>" << endl;
     exit(0);
 }
+
+
+
+/********************************************/
+/*            from strtok.cpp               */
+/********************************************/
+// Open a pipe from the C preprocessor.
+// Exit failure if can't.
+// Assigns opened pipe to FILE* yyin.
+void cpp_popen (const char* filename) {
+    cpp_command = cpp_name + " " + filename;
+    yyin = popen (cpp_command.c_str(), "r");
+    if (yyin == NULL) {
+//        syserrprintf (cpp_command.c_str());
+        fprintf(stderr, "Fail to open pipe.");
+        exit (1);
+    }
+    
+    // yy_flex_debug is not for asg1
+    //    else {
+    //        if (yy_flex_debug) {
+    //            fprintf (stderr, "-- popen (%s), fileno(yyin) = %d\n",
+    //                     cpp_command.c_str(), fileno (yyin));
+    //        }
+    //        lexer::newfilename (cpp_command);
+    //    }
+}
+void cpp_pclose() {
+    int pclose_rc = pclose (yyin);
+//    eprint_status (cpp_command.c_str(), pclose_rc);
+    if (pclose_rc != 0){
+        exit(1);
+    }
+}
+
+
+/* calls the C pre-processor, tokenizes the output,
+ * and adds it to the stringset. */
+static void cpplines (FILE* pipe, char* filename){
+    int linenr = 1;
+    char inputname[LINESIZE];
+    strcpy (inputname, filename);
+    for (;;) {
+        /* get the line */
+        char buffer[LINESIZE];
+        char* fgets_rc = fgets (buffer, LINESIZE, pipe);
+        if (fgets_rc == NULL) break;
+        /* remove the end whitespace */
+        chomp (buffer, '\n');
+        /* check for pre-processor directives */
+        int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
+                                &linenr, filename);
+        if (sscanf_rc == 2) {
+            continue;
+        }
+        /* tokenize the line */
+        char* savepos = NULL;
+        char* bufptr = buffer;
+        for (int tokenct = 1;; ++tokenct) {
+            char* token = strtok_r (bufptr, " \t\n", &savepos);
+            bufptr = NULL;
+            if (token == NULL) break;
+            /* add to stringset */
+            string_set::intern(strdup(token));
+        }
+        ++linenr;
+    }
+}
+
+// Chomp the last character from a buffer if it is delim.
+void chomp (char* string, char delim) {
+    size_t len = strlen (string);
+    if (len == 0) return;
+    char* nlpos = string + len - 1;
+    if (*nlpos == delim) *nlpos = '\0';
+}
+
+
+
+
+
+
+
+
+
+
+
+
 

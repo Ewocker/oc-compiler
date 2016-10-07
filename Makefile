@@ -5,10 +5,10 @@ MKDEP    = g++ -std=gnu++14 -MM
 
 MKFILE   = Makefile
 DEPFILE  = Makefile.dep
-SOURCES  = string_set.cpp main.cpp
-HEADERS  = string_set.h
+SOURCES  = string_set.cpp main.cpp auxlib.cpp
+HEADERS  = string_set.h auxlib.h
 OBJECTS  = ${SOURCES:.cpp=.o}
-EXECBIN  = test_string_set
+EXECBIN  = oc
 SRCFILES = ${HEADERS} ${SOURCES} ${MKFILE}
 
 all : ${EXECBIN}
