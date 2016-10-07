@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>   // for string class
 #include <vector>   // for vector class
-using namespace std;    // std::string can now be called as string
 using std::cout;    // for some reason the above namespace does not work for cout
 
 #include <assert.h>
@@ -12,21 +11,40 @@ using std::cout;    // for some reason the above namespace does not work for cou
 #include <unistd.h> // for getopt
 
 #include "stringset.h"
+#include "auxlib.h"
+
+using namespace std;    // std::string can now be called as string
 
 /*helper*/  void usage(string program);
 /*Options*/ int scan_opt(int argc, char* argv[]);
-/*check input*/ void check_input(int optIndex, int argc);
+/*check input*/ void check_input(int argc);
 /*check suffix*/void check_suffix(int optIndex, char* argv[]);
 /*is.oc*/  bool isOcFile(string file);
 /*rewrite ext*/ string change_ext(string inFile);
+/*test file accessibility*/ void test_access_file(char* file);
+
 
 int main (int argc, char* argv[]){
     int optIndex = scan_opt(argc, argv);
-    check_input(optIndex, argc);
+    check_input(argc);
     check_suffix(optIndex, argv);
-    string inFile = argv[optIndex];
-    string outFile = change_ext(inFile);
-    cout << outFile << endl;
+    
+    char *inFilename = argv[optIndex];
+    string outFilename = change_ext(inFilename);
+    
+    test_access_file(inFilename);
+    
+}
+
+
+/*test file accessibility*/
+void test_access_file(char* file){
+    FILE* tmp = fopen(file, "r");
+    if (!tmp){
+        fprintf(stderr, "File not found.\n");
+        exit(1);
+    }
+    fclose(tmp);
 }
 
 /*rewrite ext*/
@@ -37,9 +55,9 @@ string change_ext(string inFile){
 
 /*check suffix*/
 void check_suffix(int optIndex, char* argv[]){
-    string infile = argv[optIndex];
-    if(!isOcFile(infile)){
-        cerr << "InputFileError: file '" << infile << "' is not an oc program.\n";
+    string inFile = argv[optIndex];
+    if(!isOcFile(inFile)){
+        cerr << "InputFileError: file '" << inFile << "' is not an oc program.\n";
         exit(2);
     }
 }
@@ -54,12 +72,14 @@ bool isOcFile(string file){
 }
 
 /*check input*/
-void check_input(int optIndex, int argc){
+void check_input(int argc){
     /*Check input and suffix*/
     if (optind == argc) {
-        cerr <<("Please specify a program file.\n");
+//        errprintf("Please specify a program file.\n");
+        cerr << ("Please specify a program file.\n");
         exit(1);
     } else if (optind + 1 < argc){
+//        errprintf("Only one program file is allowed.\n");
         cerr << ("Only one program file is allowed.\n");
         exit(1);
     }
