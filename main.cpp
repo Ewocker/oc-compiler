@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>   // for string class
 #include <vector>   // for vector class
-using std::cout;    // for some reason the above namespace does not work for cout
+//using std::cout;    // for some reason the above namespace does not work for cout
 
 #include <assert.h>
 #include <stdio.h>
@@ -28,6 +28,7 @@ FILE* yyin; //yyin is the pipe of inFile
 /*is.oc*/  bool isOcFile(string file);
 /*rewrite ext*/ string change_ext(string inFile);
 /*test file accessibility*/ void test_access_file(char* file);
+/*dump to file*/void dump_file(string outFilename);
 
 /*from strtok.cpp*/ void cpp_popen (const char* filename);
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
@@ -47,10 +48,33 @@ int main (int argc, char* argv[]){
     cpp_popen(inFilename);
     cpplines(yyin, inFilename);
     cpp_pclose();
+    
+    dump_file(outFilename);
+    
+//    //Dump to file
+//    FILE* outfile = fopen(outFilename.c_str(), "w");
+//    if (!outfile){
+//        fprintf(stderr, "Cannot open file.\n");
+//        exit(1);
+//    }
+//    string_set::dump(outfile);
+//    fclose(outfile);
+    return EXIT_SUCCESS;
 }
 
 
 
+
+/*dump to file*/
+void dump_file(string outFilename){
+    FILE* outfile = fopen(outFilename.c_str(), "w");
+    if (!outfile){
+        fprintf(stderr, "Cannot open file.\n");
+        exit(1);
+    }
+    string_set::dump(outfile);
+    fclose(outfile);
+}
 
 /*test file accessibility*/
 void test_access_file(char* file){

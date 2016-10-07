@@ -1,0 +1,11 @@
+string_set[   0]:   15079755574658092362 0x7fa178500020->"string1"
+string_set[   2]:    1406677130130504520 0x7fa178500190->"string6"
+string_set[   4]:   11983661928133334740 0x7fa178500110->"string4"
+string_set[   6]:    8420803400217768027 0x7fa178500070->"string2"
+string_set[   7]:   16137960592196349980 0x7fa178500240->"string8"
+string_set[   8]:    3365188380091197525 0x7fa1785000b0->"string3"
+string_set[   9]:   11628459682747248306 0x7fa178500150->"string5"
+string_set[  10]:    7319168802858403567 0x7fa1785000e0->"string7"
+load_factor = 0.727
+bucket_count = 11
+max_bucket_size = 1

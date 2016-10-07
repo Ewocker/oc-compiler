@@ -2,6 +2,7 @@
 
 GPP      = g++ -std=gnu++14 -g -O0 -Wall -Wextra
 MKDEP    = g++ -std=gnu++14 -MM
+VALGRIND   = valgrind --leak-check=full --show-reachable=yes
 
 MKFILE   = Makefile
 DEPFILE  = Makefile.dep
@@ -26,7 +27,7 @@ clean :
 	-rm ${OBJECTS} ${DEPFILE}
 
 spotless : clean
-	- rm ${EXECBIN} Listing.ps Listing.pdf test.out
+	- rm ${EXECBIN} Listing.ps Listing.pdf test.out test.err
 
 ${DEPFILE} :
 	${MKDEP} ${SOURCES} >${DEPFILE}
