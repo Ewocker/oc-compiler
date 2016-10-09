@@ -11,7 +11,7 @@ HEADERS  = string_set.h auxlib.h
 OBJECTS  = ${SOURCES:.cpp=.o}
 EXECBIN  = oc
 SRCFILES = ${HEADERS} ${SOURCES} ${MKFILE}
-SUBMITION = ${Makefile} ${HEADERS} ${SOURCES} README
+SUBMITION = ${MKFILE} ${HEADERS} ${SOURCES} README
 
 all : ${EXECBIN}
 
