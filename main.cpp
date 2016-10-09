@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>   // for string class
 #include <vector>   // for vector class
-//using std::cout;    // for some reason the above namespace does not work for cout
 
 #include <assert.h>
 #include <stdio.h>
@@ -96,8 +95,9 @@ string change_ext(string inFile){
 void check_suffix(int optIndex, char* argv[]){
     string inFile = argv[optIndex];
     if(!isOcFile(inFile)){
-        cerr << "InputFileError: file '" << inFile << "' is not an oc program.\n";
-        exit(2);
+        string err = "InputFileError: file "+ inFile +" is not an oc program.";
+        fprintf(stderr, err.c_str());
+        exit(1);
     }
 }
 
@@ -161,8 +161,8 @@ int scan_opt(int argc, char* argv[]){
 /*helper*/
 // Display Usage, not require
 void usage(string program){
-    cout << "usage:" << program << " [-D <define>] [-yl] [-h](usage) <source file>" << endl;
-    exit(0);
+    string err = "usage: " + program + " [-D <define>] [-yl] [-h](usage) <source file>";
+    exit(1);
 }
 
 
@@ -170,6 +170,9 @@ void usage(string program){
 /********************************************/
 /*            from strtok.cpp               */
 /********************************************/
+
+
+
 // Open a pipe from the C preprocessor.
 // Exit failure if can't.
 // Assigns opened pipe to FILE* yyin.
