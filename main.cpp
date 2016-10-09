@@ -95,8 +95,10 @@ string change_ext(string inFile){
 void check_suffix(int optIndex, char* argv[]){
     string inFile = argv[optIndex];
     if(!isOcFile(inFile)){
-        string err = "InputFileError: file "+ inFile +" is not an oc program.";
-        fprintf(stderr, err.c_str());
+        string err = "InputFileError: file ";
+        err += inFile;
+        err += " is not an oc program.";
+        cerr << err << endl;
         exit(1);
     }
 }
@@ -161,7 +163,9 @@ int scan_opt(int argc, char* argv[]){
 /*helper*/
 // Display Usage, not require
 void usage(string program){
-    string err = "usage: " + program + " [-D <define>] [-yl] [-h](usage) <source file>";
+    string err = "usage: ";
+    err += program;
+    err += " [-D <define>] [-yl] [-h](usage) <source file>";
     exit(1);
 }
 
