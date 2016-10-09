@@ -46,3 +46,7 @@ lis : test
 
 again : ${SRCFILES}
 	make --no-print-directory spotless dep ci test lis
+
+reset :
+	git reset HEAD --hard
+	git clean -f

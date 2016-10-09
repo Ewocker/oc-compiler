@@ -58,7 +58,7 @@ int main (int argc, char* argv[]){
 //    }
 //    string_set::dump(outfile);
 //    fclose(outfile);
-    return EXIT_SUCCESS;
+    return exit(0);
 }
 
 
