@@ -11,6 +11,7 @@ HEADERS  = string_set.h auxlib.h
 OBJECTS  = ${SOURCES:.cpp=.o}
 EXECBIN  = oc
 SRCFILES = ${HEADERS} ${SOURCES} ${MKFILE}
+SUBMITION = Makefile auxlib.cpp auxlib.h string_set.cpp string_set.h main.cpp README
 
 all : ${EXECBIN}
 
@@ -50,3 +51,6 @@ again : ${SRCFILES}
 reset :
 	git reset HEAD --hard
 	git clean -f
+
+submit:
+	submit cmps104a-wm.f16 ${SUBMITION}
