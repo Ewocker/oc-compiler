@@ -50,15 +50,7 @@ int main (int argc, char* argv[]){
     
     dump_file(outFilename);
     
-//    //Dump to file
-//    FILE* outfile = fopen(outFilename.c_str(), "w");
-//    if (!outfile){
-//        fprintf(stderr, "Cannot open file.\n");
-//        exit(1);
-//    }
-//    string_set::dump(outfile);
-//    fclose(outfile);
-    return exit(0);
+    return EXIT_SUCCESS;
 }
 
 
@@ -116,11 +108,9 @@ bool isOcFile(string file){
 void check_input(int argc){
     /*Check input and suffix*/
     if (optind == argc) {
-//        errprintf("Please specify a program file.\n");
         cerr << ("Please specify a program file.\n");
         exit(1);
     } else if (optind + 1 < argc){
-//        errprintf("Only one program file is allowed.\n");
         cerr << ("Only one program file is allowed.\n");
         exit(1);
     }
@@ -184,19 +174,10 @@ void cpp_popen (const char* filename) {
     cpp_command = cpp_name + " " + filename;
     yyin = popen (cpp_command.c_str(), "r");
     if (yyin == NULL) {
-//        syserrprintf (cpp_command.c_str());
         fprintf(stderr, "Fail to open pipe.");
         exit (1);
     }
     
-    // yy_flex_debug is not for asg1
-    //    else {
-    //        if (yy_flex_debug) {
-    //            fprintf (stderr, "-- popen (%s), fileno(yyin) = %d\n",
-    //                     cpp_command.c_str(), fileno (yyin));
-    //        }
-    //        lexer::newfilename (cpp_command);
-    //    }
 }
 void cpp_pclose() {
     int pclose_rc = pclose (yyin);
