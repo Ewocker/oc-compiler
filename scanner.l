@@ -27,25 +27,10 @@ int yylval_token (int symbol) {
 LETTER              [A-Za-z_]
 DIGIT               [0-9]
 
-NUMBER          ({DIGIT}+)
-CHARACTER       ('{CHARLIT_ITEM}')
-STRING          (\"{STRINGLIT_ITEM}*\")
+NUMBER         ({DIGIT}+)
+CHAR            ('([^\\'\n]|\\[\\'"0nt])')
+STRING          (\"([^\\"\n]|\\[\\'"0nt])*\")
 IDENT           ({LETTER}({LETTER}|{DIGIT})*)
-
-
-/* Invalid */
-INV_IDENT                (({DIGIT}+){IDENT})
-/* I could of course write these as a single regular expression, but I
- * think the clarity here is better
- */
-INV_CHARACTER_LENGTH     '({CHARLIT_ITEM}|{CHARLIT_INV_ITEM}){2,}'
-INV_CHARACTER_CONTENTS   '({CHARLIT_INV_ITEM})?'
-INV_CHARACTER_UNTERM     '({CHARLIT_ITEM}|{CHARLIT_INV_ITEM})*$
-INV_STRING_CONTENTS      (\"{STRINGLIT_ITEM}*{STRINGLIT_INV_ITEM}+({STRINGLIT_ITEM}|{STRINGLIT_INV_ITEM})*\")
-INV_STRING_UNTERM        \"({STRINGLIT_ITEM}|{STRINGLIT_INV_ITEM})*$
-
-
-
 
 %%
 
@@ -71,7 +56,7 @@ INV_STRING_UNTERM        \"({STRINGLIT_ITEM}|{STRINGLIT_INV_ITEM})*$
 "new"           { return yylval_token(TOK_NEW); }
 
 {NUMBER}        { return yylval_token (TOK_INTCON); }
-{CHARACTER}     { return yylval_token (TOK_CHARCON); }
+{CHAR}     { return yylval_token (TOK_CHARCON); }
 {STRING}        { return yylval_token (TOK_STRINGCON); }
 {IDENT}         { return yylval_token (TOK_IDENT); }
 
@@ -101,16 +86,5 @@ INV_STRING_UNTERM        \"({STRINGLIT_ITEM}|{STRINGLIT_INV_ITEM})*$
 "<="            { return yylval_token (TOK_LE); }
 ">="            { return yylval_token (TOK_GE); }
 
-{INV_IDENT}              { scanner_invalidtoken(TOK_IDENT, yytext); } 
-{INV_CHARACTER_LENGTH}   { scanner_invalidtoken(TOK_CHARCON, yytext); } 
-{INV_CHARACTER_UNTERM}   { scanner_invalidtoken(TOK_CHARCON, yytext); } 
-{INV_CHARACTER_CONTENTS} { scanner_invalidtoken(TOK_CHARCON, yytext); } 
-{INV_STRING_CONTENTS}    { scanner_invalidtoken(TOK_STRINGCON, yytext); } 
-{INV_STRING_UNTERM}      { scanner_invalidtoken(TOK_STRINGCON, yytext); } 
-
-{NOTNUMBER}     { lexer::badtoken (yytext);
-                  return yylval_token (NUMBER); }
-.               { lexer::badchar (*yytext); }
-
+.               { lexer_badchar (*yytext); }
 %%
-

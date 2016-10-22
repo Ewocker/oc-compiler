@@ -16,7 +16,7 @@ SMALLFILES = ${DEPFILE} foo.oc foo1.oh foo2.oh
 SUBMITS    = ${SRCFILES} README parser.y scanner.l
 
 LSOURCES = scanner.l
-YSOURCE  = parser.y
+YSOURCES = parser.y
 CLGEN	 = yylex.cpp
 HYGEN	 = yyparse.h
 CYGEN	 = yyparse.cpp
@@ -33,11 +33,11 @@ ${EXECBIN} : ${OBJECTS}
 	${GPP} -c $<
 
 ${CLGEN} : ${LSOURCES}
-	flex —outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
-	- grep -v ‘^ ‘ ${LREPORT}
+	flex -outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
+	- grep -v '^ ' ${LREPORT}
 
 ${CYGEN} ${HYGEN} : ${YSOURCES}
-	bison —defines=${HYGEN} —output=${CYGEN} ${YSOURCES} 
+	bison --defines=${HYGEN} --output=${CYGEN} ${YSOURCES}
 
 ci :
 	cid + ${SRCFILES}

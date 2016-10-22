@@ -1,0 +1,6 @@
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -c main.cpp
+main.cpp: In function ‘int main(int, char**)’:
+main.cpp:65:22: error: ‘YYEOF’ was not declared in this scope
+         if (token == YYEOF) break;
+                      ^
+gmake: *** [main.o] Error 1

@@ -11,6 +11,8 @@
 
 #include "string_set.h"
 #include "auxlib.h"
+#include "astree.h"
+#include "lyutils.h"
 
 using namespace std;    // std::string can now be called as string
 
@@ -19,7 +21,7 @@ const string cpp_name = "/usr/bin/cpp";
 string cpp_command;
 FILE* yyin;     //yyin is the pipe of inFile
 int yy_flex_debug;
-
+int yydebug;
 
 /*helper*/  void usage(string program);
 /*Options*/ int scan_opt(int argc, char* argv[]);
@@ -52,6 +54,7 @@ int main (int argc, char* argv[]){
     
     /* call the "scanner" */
     FILE* tokFile = fopen(tokFilename.c_str(), "w");
+    fclose(tokFile);
     
     cpp_popen(inFilename);
     cpplines(yyin, inFilename);
