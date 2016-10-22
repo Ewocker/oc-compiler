@@ -17,7 +17,8 @@ using namespace std;    // std::string can now be called as string
 #define LINESIZE 1024
 const string cpp_name = "/usr/bin/cpp";
 string cpp_command;
-FILE* yyin; //yyin is the pipe of inFile
+FILE* yyin;     //yyin is the pipe of inFile
+int yy_flex_debug;
 
 
 /*helper*/  void usage(string program);
@@ -25,7 +26,7 @@ FILE* yyin; //yyin is the pipe of inFile
 /*check input*/ void check_input(int argc);
 /*check suffix*/void check_suffix(int optIndex, char* argv[]);
 /*is.oc*/  bool isOcFile(string file);
-/*rewrite ext*/ string change_ext(string inFile);
+/*rewrite ext*/ string change_ext(string inFile, string ext);
 /*test file accessibility*/ void test_access_file(char* file);
 /*dump to file*/void dump_file(string outFilename);
 
@@ -34,27 +35,45 @@ FILE* yyin; //yyin is the pipe of inFile
 /*from strtok.cpp*/ void cpp_pclose();
 /*from strtok.cpp*/ void chomp (char* string, char delim);
 
+//---------------------------------------------------------------------------------------
+
 int main (int argc, char* argv[]){
+    //init
+    //==================
     int optIndex = scan_opt(argc, argv);
     check_input(argc);
     check_suffix(optIndex, argv);
     
     char *inFilename = argv[optIndex];
-    string outFilename = change_ext(inFilename);
+    string strFilename = change_ext(inFilename, ".str");
+    string tokFilename = change_ext(inFilename, ".tok");
     
     test_access_file(inFilename);
     
+    /* call the "scanner" */
+    FILE* tokFile = fopen(tokFilename.c_str(), "w");
+    test_access_file(tokFilename)
+    
     cpp_popen(inFilename);
     cpplines(yyin, inFilename);
-    cpp_pclose();
     
-    dump_file(outFilename);
+    //dump .tok
+    for(;;) {
+        int token = yylex();
+        if (token == YYEOF) break;
+    }
+    
+    dump_file(strFilename);
+    cpp_pclose();
+    yylex_destroy();
     
     return EXIT_SUCCESS;
 }
 
 
 
+
+//---------------------------------------------------------------------------------------
 
 /*dump to file*/
 void dump_file(string outFilename){
@@ -78,9 +97,9 @@ void test_access_file(char* file){
 }
 
 /*rewrite ext*/
-string change_ext(string inFile){
+string change_ext(string inFile, string ext){
     size_t found = inFile.find_last_of(".");
-    return inFile.substr(0,found) + ".str";
+    return inFile.substr(0,found) + ext;
 }
 
 /*check suffix*/
@@ -131,9 +150,11 @@ int scan_opt(int argc, char* argv[]){
                 break;
             case 'l':
                 //    cout << "l" << endl;    //test
+                yy_flex_debug = 1;
                 break;
             case 'y':
                 //    cout << "y" << endl;    //test
+                yydebug = 1;
                 break;
             case 'h':
                 //    cout << "h" << endl;    //test
@@ -176,9 +197,14 @@ void cpp_popen (const char* filename) {
     if (yyin == NULL) {
         fprintf(stderr, "Fail to open pipe.");
         exit (1);
+    } else {
+        if (yy_flex_debug) {
+            fprintf(stderr, "-- popen (%s), fileno(yyin) = %d\n",
+                    cpp_command.c_str(), fileno(yyin));
+        }
     }
-    
 }
+
 void cpp_pclose() {
     int pclose_rc = pclose (yyin);
 //    eprint_status (cpp_command.c_str(), pclose_rc);

@@ -13,6 +13,7 @@ bool lexer::interactive = true;
 location lexer::lloc = {0, 1, 0};
 size_t lexer::last_yyleng = 0;
 vector<string> lexer::filenames;
+//extern yy_flex_debug
 
 astree* parser::root = nullptr;
 

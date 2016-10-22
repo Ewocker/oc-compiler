@@ -1,56 +1,62 @@
-# $Id: Makefile,v 1.4 2016-09-21 16:56:20-07 - - $
+# $Id: Makefile,v 1.8 2014-10-07 18:13:45-07 - - $
 
-GPP      = g++ -std=gnu++14 -g -O0 -Wall -Wextra
-MKDEP    = g++ -std=gnu++14 -MM
+GPP        = g++ -g -O0 -Wall -Wextra -std=gnu++11
+MKDEP      = ${GPP} -MM -std=gnu++11
 VALGRIND   = valgrind --leak-check=full --show-reachable=yes
 
-MKFILE   = Makefile
-DEPFILE  = Makefile.dep
-SOURCES  = string_set.cpp main.cpp auxlib.cpp
-HEADERS  = string_set.h auxlib.h
-OBJECTS  = ${SOURCES:.cpp=.o}
-EXECBIN  = oc
-SRCFILES = ${HEADERS} ${SOURCES} ${MKFILE}
-SUBMITION = ${MKFILE} ${HEADERS} ${SOURCES} README
+MKFILE     = Makefile
+DEPFILE    = Makefile.dep
+SOURCES    = cppstrtok.cpp main.cpp stringset.cpp astree.cpp lyutils.cpp auxlib.cpp
+GENSRCS    = yyparse.cpp yylex.cpp
+HEADERS    = stringset.h oc.h auxlib.h lyutils.h astree.h
+OBJECTS    = ${SOURCES:.cpp=.o} ${GENSRCS:.cpp=.o}
+EXECBIN    = oc
+SRCFILES   = ${HEADERS} ${SOURCES} ${MKFILE}
+SMALLFILES = ${DEPFILE} foo.oc foo1.oh foo2.oh
+SUBMITS    = ${SRCFILES} README parser.y scanner.l
 
 all : ${EXECBIN}
 
 ${EXECBIN} : ${OBJECTS}
-	${GPP} ${OBJECTS} -o ${EXECBIN}
+	${GPP} -o${EXECBIN} ${OBJECTS}
 
 %.o : %.cpp
 	${GPP} -c $<
 
+yyparse.h yyparse.cpp : parser.y
+	bison parser.y -o yyparse.cpp --defines=yyparse.h
+
+yylex.cpp : scanner.l yyparse.h
+	flex -o yylex.cpp scanner.l
+
 ci :
-	cid + ${SRCFILES}
+	cid + ${SUBMITS}
+	checksource ${SUBMITS}
 
 clean :
-	-rm ${OBJECTS} ${DEPFILE}
+	- rm ${OBJECTS} ${GENSRCS} yyparse.h yyparse.output
 
 spotless : clean
-	- rm ${EXECBIN} Listing.ps Listing.pdf test.out test.err
+	- rm ${EXECBIN} ${LISTING} ${LISTING:.ps=.pdf} ${DEPFILE} \
+	     test.out test.err misc.lis
 
-${DEPFILE} :
-	${MKDEP} ${SOURCES} >${DEPFILE}
+${DEPFILE} : ${SOURCES} ${GENSRCS}
+	${MKDEP} ${SOURCES} ${GENSRCS} >${DEPFILE}
 
 dep :
 	- rm ${DEPFILE}
 	${MAKE} --no-print-directory ${DEPFILE}
 
-include ${DEPFILE}
+include Makefile.dep
 
 test : ${EXECBIN}
-	${EXECBIN} * * * >test.out 2>&1
+	${VALGRIND} ./${EXECBIN} foo.oc 1>test.out 2>test.err
 
-lis : test
-	mkpspdf Listing.ps ${SRCFILES} ${DEPFILE} test.out
-
-again : ${SRCFILES}
-	make --no-print-directory spotless dep ci test lis
-
-reset :
-	git reset HEAD --hard
-	git clean -f
+checks:
+	/afs/cats.ucsc.edu/courses/cmps104a-wm/bin/checksource ${SOURCES}
 
 submit:
-	submit cmps104a-wm.f16 asg1 ${SUBMITION}
+	submit cmps104a-wm.f14 asg2 ${SUBMITS}
+	mkdir -p sub
+	cp ${SUBMITS} sub/
+
