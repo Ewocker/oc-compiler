@@ -52,7 +52,6 @@ int main (int argc, char* argv[]){
     
     /* call the "scanner" */
     FILE* tokFile = fopen(tokFilename.c_str(), "w");
-    test_access_file(tokFilename)
     
     cpp_popen(inFilename);
     cpplines(yyin, inFilename);
