@@ -34,9 +34,9 @@ IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 
 %%
 
-"#".*           { scanner_include(); }
+"#".*           { lexer::include(); }
 [ \t]+          { IGNORE (white space) }
-\n              { scanner_newline(); }
+\n              { lexer::newline(); }
 
 "void"          { return yylval_token(TOK_VOID); }
 "bool"          { return yylval_token(TOK_BOOL); }

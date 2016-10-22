@@ -14,6 +14,8 @@ using namespace std;
 #include "astree.h"
 #include "auxlib.h"
 
+#define YYEOF 0
+
 extern FILE* yyin;
 extern char* yytext;
 extern int yy_flex_debug;

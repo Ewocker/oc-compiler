@@ -1,6 +1,28 @@
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -c main.cpp
-main.cpp: In function ‘int main(int, char**)’:
-main.cpp:65:22: error: ‘YYEOF’ was not declared in this scope
-         if (token == YYEOF) break;
-                      ^
-gmake: *** [main.o] Error 1
+flex -outfile=yylex.cpp scanner.l 2>yylex.output
+grep -v '^ ' yylex.output
+gmake: [yylex.cpp] Error 1 (ignored)
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -c yylex.cpp
+scanner.l: In function ‘int yylex()’:
+scanner.l:37:19: error: ‘scanner_include’ was not declared in this scope
+ "#".*           { lexer::include(); }
+                   ^
+scanner.l:39:19: error: ‘scanner_newline’ was not declared in this scope
+ \n              { lexer::newline(); }
+                   ^
+scanner.l:42:23: error: ‘TOK_BOOL’ was not declared in this scope
+ "bool"          { return yylval_token(TOK_BOOL); }
+                       ^
+scanner.l:51:23: error: ‘TOK_FALSE’ was not declared in this scope
+ "false"         { return yylval_token(TOK_FALSE); }
+                       ^
+scanner.l:52:23: error: ‘TOK_TRUE’ was not declared in this scope
+ "true"          { return yylval_token(TOK_TRUE); }
+                       ^
+scanner.l:89:25: error: ‘lexer_badchar’ was not declared in this scope
+ .               { lexer_badchar (*yytext); }
+                         ^
+yylex.cpp: In function ‘yy_buffer_state* yy_scan_bytes(const char*, yy_size_t)’:
+yylex.cpp:2069:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for ( i = 0; i < _yybytes_len; ++i )
+                 ^
+gmake: *** [yylex.o] Error 1
