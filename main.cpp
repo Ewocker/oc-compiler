@@ -19,9 +19,9 @@ using namespace std;    // std::string can now be called as string
 #define LINESIZE 1024
 const string cpp_name = "/usr/bin/cpp";
 string cpp_command;
-FILE* yyin;     //yyin is the pipe of inFile
-int yy_flex_debug;
-int yydebug;
+extern FILE* yyin;     //yyin is the pipe of inFile
+extern int yy_flex_debug;
+extern int yydebug;
 
 /*helper*/  void usage(string program);
 /*Options*/ int scan_opt(int argc, char* argv[]);

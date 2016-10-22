@@ -1,22 +1,10 @@
-flex --outfile=yylex.cpp scanner.l 2>yylex.output
-grep -v '^ ' yylex.output
-gmake: [yylex.cpp] Error 1 (ignored)
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -c yylex.cpp
-scanner.l: In function ‘int yylex()’:
-scanner.l:42:23: error: ‘TOK_BOOL’ was not declared in this scope
- "bool"          { return yylval_token(TOK_BOOL); }
-                       ^
-scanner.l:43:23: error: ‘TO_CHAR’ was not declared in this scope
- "char"          { return yylval_token(TO_CHAR); }
-                       ^
-scanner.l:51:23: error: ‘TOK_FALSE’ was not declared in this scope
- "false"         { return yylval_token(TOK_FALSE); }
-                       ^
-scanner.l:52:23: error: ‘TOK_TRUE’ was not declared in this scope
- "true"          { return yylval_token(TOK_TRUE); }
-                       ^
-yylex.cpp: In function ‘yy_buffer_state* yy_scan_bytes(const char*, yy_size_t)’:
-yylex.cpp:2069:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-  for ( i = 0; i < _yybytes_len; ++i )
-                 ^
-gmake: *** [yylex.o] Error 1
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -c main.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc
+main.o: In function `dump_file(std::string)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/main.cpp:87: undefined reference to `string_set::dump(_IO_FILE*)'
+main.o: In function `cpplines':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/main.cpp:246: undefined reference to `string_set::intern(char const*)'
+astree.o: In function `astree::astree(int, location const&, char const*)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/astree.cpp:17: undefined reference to `string_set::intern(char const*)'
+collect2: error: ld returned 1 exit status
+gmake: *** [oc] Error 1

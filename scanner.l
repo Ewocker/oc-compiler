@@ -47,15 +47,13 @@ IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 "else"          { return yylval_token(TOK_ELSE); }
 "while"         { return yylval_token(TOK_WHILE); }
 "return"        { return yylval_token(TOK_RETURN); }
-"false"         { return yylval_token(TOK_FALSE); }
-"true"          { return yylval_token(TOK_TRUE); }
 "null"          { return yylval_token(TOK_NULL); }
 "ord"           { return yylval_token(TOK_ORD); }
 "chr"           { return yylval_token(TOK_CHR); }
 "new"           { return yylval_token(TOK_NEW); }
 
 {NUMBER}        { return yylval_token (TOK_INTCON); }
-{CHARACTER}     { return yylval_token (TOK_CHARCON); }
+{CHAR}     { return yylval_token (TOK_CHARCON); }
 {STRING}        { return yylval_token (TOK_STRINGCON); }
 {IDENT}         { return yylval_token (TOK_IDENT); }
 
