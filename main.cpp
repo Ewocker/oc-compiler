@@ -22,6 +22,7 @@ string cpp_command;
 extern FILE* yyin;     //yyin is the pipe of inFile
 extern int yy_flex_debug;
 extern int yydebug;
+FILE* tokFile;
 
 /*helper*/  void usage(string program);
 /*Options*/ int scan_opt(int argc, char* argv[]);
@@ -53,7 +54,7 @@ int main (int argc, char* argv[]){
     test_access_file(inFilename);
     
     /* call the "scanner" */
-    FILE* tokFile = fopen(tokFilename.c_str(), "w");
+    tokFile = fopen(tokFilename.c_str(), "w");
     fclose(tokFile);
     
     cpp_popen(inFilename);

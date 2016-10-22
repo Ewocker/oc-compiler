@@ -1,1 +1,2 @@
-gmake: Nothing to be done for `all'.
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -c lyutils.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc

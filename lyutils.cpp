@@ -16,6 +16,7 @@ vector<string> lexer::filenames;
 //extern yy_flex_debug
 
 astree* parser::root = nullptr;
+extern FILE* tokFile;
 
 const string* lexer::filename (int filenr) {
     return &lexer::filenames.at(filenr);

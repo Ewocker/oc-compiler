@@ -26,7 +26,7 @@ YREPORT	 = yyparse.output
 
 all : ${EXECBIN}
 
-${EXECBIN} : ${OBJECTS}
+${EXECBIN} : ${CLGEN} ${CYGEN} ${OBJECTS}
 	${GPP} ${OBJECTS} -o ${EXECBIN}
 
 %.o : %.cpp
@@ -67,6 +67,18 @@ again : ${SRCFILES}
 
 checks:
 	/afs/cats.ucsc.edu/courses/cmps104a-wm/bin/checksource ${SOURCES}
+
+cleanyy: 
+	rm yylex.* yyparse.*
+
+cleantest:
+	rm *.tok *.err *.str
+
+cleanall:
+	make cleantest
+	make cleanyy
+	make spotless
+	make clean
 
 reset :
 	git reset HEAD --hard

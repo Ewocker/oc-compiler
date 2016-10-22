@@ -1,11 +1,11 @@
-string_set[   0]:   15079755574658092362 0x7fa178500020->"string1"
-string_set[   2]:    1406677130130504520 0x7fa178500190->"string6"
-string_set[   4]:   11983661928133334740 0x7fa178500110->"string4"
-string_set[   6]:    8420803400217768027 0x7fa178500070->"string2"
-string_set[   7]:   16137960592196349980 0x7fa178500240->"string8"
-string_set[   8]:    3365188380091197525 0x7fa1785000b0->"string3"
-string_set[   9]:   11628459682747248306 0x7fa178500150->"string5"
-string_set[  10]:    7319168802858403567 0x7fa1785000e0->"string7"
+string_set[   0]:    8954937735645966812 0x1b89548->"string7"
+string_set[   2]:    9981811904755954463 0x1b894d8->"string6"
+                     5981711598734670988 0x1b892d8->"string2"
+string_set[   4]:    3934116607259143573 0x1b89248->"string1"
+string_set[   7]:   11000535747504148765 0x1b893c8->"string4"
+string_set[   8]:   15911861261584493004 0x1b89358->"string3"
+string_set[  10]:   15253808369251357366 0x1b895b8->"string8"
+                     2483941336644571869 0x1b89438->"string5"
 load_factor = 0.727
 bucket_count = 11
-max_bucket_size = 1
+max_bucket_size = 2
