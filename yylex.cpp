@@ -994,7 +994,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 37 "scanner.l"
-{ scanner_include(); }
+{ lexer::include(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -1005,7 +1005,7 @@ case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
 #line 39 "scanner.l"
-{ scanner_newline(); }
+{ lexer::newline(); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -1020,7 +1020,7 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 43 "scanner.l"
-{ return yylval_token(TOK_CHAR); }
+{ return yylval_token(TO_CHAR); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
@@ -1230,7 +1230,7 @@ YY_RULE_SETUP
 case 48:
 YY_RULE_SETUP
 #line 89 "scanner.l"
-{ lexer_badchar (*yytext); }
+{ lexer::badchar (*yytext); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP

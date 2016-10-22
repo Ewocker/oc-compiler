@@ -33,7 +33,7 @@ ${EXECBIN} : ${OBJECTS}
 	${GPP} -c $<
 
 ${CLGEN} : ${LSOURCES}
-	flex -outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
+	flex --outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
 	- grep -v '^ ' ${LREPORT}
 
 ${CYGEN} ${HYGEN} : ${YSOURCES}

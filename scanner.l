@@ -86,5 +86,5 @@ IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 "<="            { return yylval_token (TOK_LE); }
 ">="            { return yylval_token (TOK_GE); }
 
-.               { lexer_badchar (*yytext); }
+.               { lexer::badchar (*yytext); }
 %%
