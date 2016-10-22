@@ -1,10 +1,1 @@
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -c main.cpp
-g++ -std=gnu++14 -g -O0 -Wall -Wextra main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc
-main.o: In function `dump_file(std::string)':
-/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/main.cpp:87: undefined reference to `string_set::dump(_IO_FILE*)'
-main.o: In function `cpplines':
-/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/main.cpp:246: undefined reference to `string_set::intern(char const*)'
-astree.o: In function `astree::astree(int, location const&, char const*)':
-/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/astree.cpp:17: undefined reference to `string_set::intern(char const*)'
-collect2: error: ld returned 1 exit status
-gmake: *** [oc] Error 1
+gmake: Nothing to be done for `all'.
