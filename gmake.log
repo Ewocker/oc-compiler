@@ -1,2 +1,12 @@
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -c lyutils.cpp
+flex --outfile=yylex.cpp scanner.l 2>yylex.output
+grep -v '^ ' yylex.output
+gmake: [yylex.cpp] Error 1 (ignored)
+bison --defines=yyparse.h --output=yyparse.cpp parser.y
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c string_set.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c main.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c astree.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c lyutils.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c auxlib.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c yyparse.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c yylex.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc

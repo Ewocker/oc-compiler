@@ -30,7 +30,7 @@ ${EXECBIN} : ${CLGEN} ${CYGEN} ${OBJECTS}
 	${GPP} ${OBJECTS} -o ${EXECBIN}
 
 %.o : %.cpp
-	${GPP} -c $<
+	${GPP} -Wno-sign-compare -c $<
 
 ${CLGEN} : ${LSOURCES}
 	flex --outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
@@ -72,13 +72,9 @@ cleanyy:
 	rm yylex.* yyparse.*
 
 cleantest:
-	rm *.tok *.err *.str
+	rm *.tok *.err *.str *.out *-*.oc
 
-cleanall:
-	make cleantest
-	make cleanyy
-	make spotless
-	make clean
+cleanall: cleantest cleanyy spotless clean
 
 reset :
 	git reset HEAD --hard
