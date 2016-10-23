@@ -1,1 +1,7 @@
-./mk.build: line 13: gmake: command not found
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c main.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c astree.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c lyutils.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c auxlib.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c yyparse.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c yylex.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc

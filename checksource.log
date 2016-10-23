@@ -1,1 +1,24 @@
-./mk.build: line 12: checksource: command not found
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LC_NUMERIC = "it_IT.UTF-8",
+	LC_MESSAGES = "it_It.UTF-8",
+	LC_COLLATE = "it_IT.UTF-8",
+	LC_CTYPE = "it_IT.UTF-8",
+	LC_TIME = "it_IT.UTF-8",
+	LANG = "it_IT.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+checksource: improper character \x09 = ^I (tab)
+   file "scanner.l": 6 errors: lines 16--17
+checksource: line length > 72 characters
+   file "Makefile": 1 errors: line 69
+   file "cppstrok.cpp": 1 errors: line 73
+   file "lyutils.cpp": 1 errors: line 64
+   file "main.cpp": 2 errors: lines 42, 114
+   file "scanner.l": 3 errors: lines 7, 14, 16
+checksource: missing newline at end of line
+   file "astree.cpp": 1 errors: line 92
+   file "cppstrok.cpp": 1 errors: line 109
+checksource: TOTAL COMPLAINTS: 16

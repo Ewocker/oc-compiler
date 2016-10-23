@@ -24,6 +24,7 @@ extern int yy_flex_debug;
 extern int yydebug;
 FILE* tokFile;
 
+
 /*helper*/  void usage(string program);
 /*Options*/ int scan_opt(int argc, char* argv[]);
 /*check input*/ void check_input(int argc);
@@ -71,6 +72,7 @@ void scan (string filename) {
 
 int main (int argc, char* argv[]){
     //init
+    set_execname(argv[0]);
     //==================
     yy_flex_debug = 0;
     int optIndex = scan_opt(argc, argv);
