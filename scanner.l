@@ -7,9 +7,13 @@
 //INV_STRING      ((\"{STRINGLIT_ITEM}*)(({STRINGLIT_INV_ITEM}+({STRINGLIT_ITEM}*(\"|\n)))|\n))
 #define YY_USER_ACTION  { lexer::advance(); }
 #define IGNORE(THING)   { }
+extern FILE* tokFile;
 
 int yylval_token (int symbol) {
    yylval = new astree (symbol, lexer::lloc, yytext);
+   fprintf(tokFile, "%5zu %2zu.%03zu %4u %-15s (%s)\n",
+   			yylval->lloc.filenr, yylval->lloc.linenr, yylval->lloc.offset, yylval->symbol,
+   			parser::get_tname(yylval->symbol), yylval->lexinfo->c_str());
    return symbol;
 }
 

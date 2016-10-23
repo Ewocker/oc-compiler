@@ -1,6 +1,7 @@
 string1
 string2
 string3
+1=2
 #ifdef not_def
 invisible_string
 #endif

@@ -40,9 +40,39 @@ FILE* tokFile;
 
 //---------------------------------------------------------------------------------------
 
+
+
+void scan (string filename) {
+    
+    string tokFilename = change_ext(filename, ".tok");
+    
+    tokFile = fopen (tokFilename.c_str(), "w");
+    if (tokFile == NULL) {
+        cout << "Error opening file";
+    } else {
+        for (;;) {
+            int token = yylex();
+            
+            if (yy_flex_debug) fflush (NULL);
+            if (token == YYEOF) break;
+            
+            DEBUGF('m', "token=%d", token);
+        }
+    }
+    fprintf (tokFile, "test\n");
+}
+
+
+
+
+
+
+
+
 int main (int argc, char* argv[]){
     //init
     //==================
+    yy_flex_debug = 0;
     int optIndex = scan_opt(argc, argv);
     check_input(argc);
     check_suffix(optIndex, argv);
@@ -55,16 +85,18 @@ int main (int argc, char* argv[]){
     
     /* call the "scanner" */
     tokFile = fopen(tokFilename.c_str(), "w");
+    
+    fprintf(tokFile, "a");
+//    //dump .tok
+//    for(;;) {
+//        int token = yylex();
+//        if (token == YYEOF) break;
+//    }
     fclose(tokFile);
     
     cpp_popen(inFilename);
     cpplines(yyin, inFilename);
     
-    //dump .tok
-    for(;;) {
-        int token = yylex();
-        if (token == YYEOF) break;
-    }
     
     dump_file(strFilename);
     cpp_pclose();
@@ -205,6 +237,8 @@ void cpp_popen (const char* filename) {
             fprintf(stderr, "-- popen (%s), fileno(yyin) = %d\n",
                     cpp_command.c_str(), fileno(yyin));
         }
+        lexer::newfilename (cpp_command.c_str());
+        scan (filename);
     }
 }
 
