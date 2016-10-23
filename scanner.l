@@ -32,10 +32,11 @@ int yylval_token (int symbol) {
 LETTER              [A-Za-z_]
 DIGIT               [0-9]
 
-NUMBER         ({DIGIT}+)
+NUMBER          ({DIGIT}+)
 CHAR            ('([^\\'\n]|\\[\\'"0nt])')
 STRING          (\"([^\\"\n]|\\[\\'"0nt])*\")
 IDENT           ({LETTER}({LETTER}|{DIGIT})*)
+INV_IDENT	(({DIGIT}+){IDENT})	
 
 %%
 
@@ -58,7 +59,7 @@ IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 "new"           { return yylval_token(TOK_NEW); }
 
 {NUMBER}        { return yylval_token (TOK_INTCON); }
-{CHAR}     { return yylval_token (TOK_CHARCON); }
+{CHAR}     	{ return yylval_token (TOK_CHARCON); }
 {STRING}        { return yylval_token (TOK_STRINGCON); }
 {IDENT}         { return yylval_token (TOK_IDENT); }
 
@@ -88,6 +89,8 @@ IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 "<="            { return yylval_token (TOK_LE); }
 ">="            { return yylval_token (TOK_GE); }
 
-
+{INV_IDENT}     { lexer::badtoken (yytext); } 
 .               { lexer::badchar (*yytext); }
+
 %%
+

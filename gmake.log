@@ -1,3 +1,8 @@
+flex --outfile=yylex.cpp scanner.l 2>yylex.output
+grep -v '^ ' yylex.output
+gmake: [yylex.cpp] Error 1 (ignored)
+bison --defines=yyparse.h --output=yyparse.cpp parser.y
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c string_set.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c main.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c astree.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c lyutils.cpp
