@@ -11,6 +11,7 @@ extern FILE* tokFile;
 
 int yylval_token (int symbol) {
    yylval = new astree (symbol, lexer::lloc, yytext);
+   //    fprintf(tokFile, lexer::filename(yylval->lloc.filenr)->c_str());
    fprintf(tokFile, "%5zu %2zu.%03zu %4u %-15s (%s)\n",
    			yylval->lloc.filenr, yylval->lloc.linenr, yylval->lloc.offset, yylval->symbol,
    			parser::get_tname(yylval->symbol), yylval->lexinfo->c_str());

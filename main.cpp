@@ -59,7 +59,7 @@ void scan (string filename) {
             DEBUGF('m', "token=%d", token);
         }
     }
-    fprintf (tokFile, "test\n");
+//    fprintf (tokFile, "test\n");
 }
 
 
@@ -87,14 +87,15 @@ int main (int argc, char* argv[]){
     tokFile = fopen(tokFilename.c_str(), "w");
     
     fprintf(tokFile, "a");
-//    //dump .tok
-//    for(;;) {
-//        int token = yylex();
-//        if (token == YYEOF) break;
-//    }
+
     fclose(tokFile);
     
     cpp_popen(inFilename);
+    
+//    asg2
+    scan (inFilename);
+    
+//    asg1
     cpplines(yyin, inFilename);
     
     
@@ -238,7 +239,6 @@ void cpp_popen (const char* filename) {
                     cpp_command.c_str(), fileno(yyin));
         }
         lexer::newfilename (cpp_command.c_str());
-        scan (filename);
     }
 }
 
