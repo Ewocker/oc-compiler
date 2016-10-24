@@ -30,7 +30,7 @@ ${EXECBIN} : ${CLGEN} ${CYGEN} ${OBJECTS}
 	${GPP} ${OBJECTS} -o ${EXECBIN}
 
 %.o : %.cpp
-	${GPP} -Wno-deprecated-register -Wno-sign-compare -c $<
+	${GPP} -Wno-sign-compare -c $<
 
 ${CLGEN} : ${LSOURCES}
 	flex --outfile=${CLGEN} ${LSOURCES} 2>${LREPORT}
