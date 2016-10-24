@@ -36,7 +36,7 @@ NUMBER          ({DIGIT}+)
 CHAR            ('([^\\'\n]|\\[\\'"0nt])')
 STRING          (\"([^\\"\n]|\\[\\'"0nt])*\")
 IDENT           ({LETTER}({LETTER}|{DIGIT})*)
-INV_IDENT       (({DIGIT}+){IDENT}}
+INV_IDENT       (({DIGIT}+){IDENT})
 
 %%
 
