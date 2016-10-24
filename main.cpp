@@ -38,37 +38,8 @@ FILE* tokFile;
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
 /*from strtok.cpp*/ void cpp_pclose();
 /*from strtok.cpp*/ void chomp (char* string, char delim);
-
-//---------------------------------------------------------------------------------------
-
-
-
-void scan (string filename) {
-    
-    string tokFilename = change_ext(filename, ".tok");
-    
-    tokFile = fopen (tokFilename.c_str(), "w");
-    if (tokFile == NULL) {
-        cout << "Error opening file";
-    } else {
-        for (;;) {
-            int token = yylex();
-            
-            if (yy_flex_debug) fflush (NULL);
-            if (token == YYEOF) break;
-            
-            DEBUGF('m', "token=%d", token);
-        }
-    }
-//    fprintf (tokFile, "test\n");
-}
-
-
-
-
-
-
-
+/*dump to .tok*/ void scan (string filename);
+//----------------------------------------------------
 
 int main (int argc, char* argv[]){
     //init
@@ -109,7 +80,27 @@ int main (int argc, char* argv[]){
 
 
 
-//---------------------------------------------------------------------------------------
+//---------------------------------------------
+
+/*dump to .tok*/
+void scan (string filename) {
+    
+    string tokFilename = change_ext(filename, ".tok");
+    
+    tokFile = fopen (tokFilename.c_str(), "w");
+    if (tokFile == NULL) {
+        cout << "Error opening file";
+    } else {
+        for (;;) {
+            int token = yylex();
+            
+            if (yy_flex_debug) fflush (NULL);
+            if (token == YYEOF) break;
+            
+            DEBUGF('m', "token=%d", token);
+        }
+    }
+}
 
 /*dump to file*/
 void dump_file(string outFilename){

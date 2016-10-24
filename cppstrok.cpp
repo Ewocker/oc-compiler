@@ -70,7 +70,8 @@ void cpplines (FILE* pipe, const char* filename) {
         int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
                                 &linenr, inputname);
         if (sscanf_rc == 2) {
-            printf ("DIRECTIVE: line %d file \"%s\"\n", linenr, inputname);
+            printf ("DIRECTIVE: line %d file \"%s\"\n",
+                     linenr, inputname);
             continue;
         }
         char* savepos = NULL;

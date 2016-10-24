@@ -4,17 +4,17 @@
 #include "auxlib.h"
 #include "lyutils.h"
 
-//INV_STRING      ((\"{STRINGLIT_ITEM}*)(({STRINGLIT_INV_ITEM}+({STRINGLIT_ITEM}*(\"|\n)))|\n))
 #define YY_USER_ACTION  { lexer::advance(); }
 #define IGNORE(THING)   { }
 extern FILE* tokFile;
 
 int yylval_token (int symbol) {
    yylval = new astree (symbol, lexer::lloc, yytext);
-   //    fprintf(tokFile, lexer::filename(yylval->lloc.filenr)->c_str());
    fprintf(tokFile, "%5zu %2zu.%03zu %4u %-15s (%s)\n",
-   			yylval->lloc.filenr, yylval->lloc.linenr, yylval->lloc.offset, yylval->symbol,
-   			parser::get_tname(yylval->symbol), yylval->lexinfo->c_str());
+           yylval->lloc.filenr, yylval->lloc.linenr,
+           yylval->lloc.offset, yylval->symbol,
+           parser::get_tname(yylval->symbol),
+           yylval->lexinfo->c_str());
    return symbol;
 }
 
@@ -36,7 +36,7 @@ NUMBER          ({DIGIT}+)
 CHAR            ('([^\\'\n]|\\[\\'"0nt])')
 STRING          (\"([^\\"\n]|\\[\\'"0nt])*\")
 IDENT           ({LETTER}({LETTER}|{DIGIT})*)
-INV_IDENT	(({DIGIT}+){IDENT})	
+INV_IDENT       (({DIGIT}+){IDENT}}
 
 %%
 
@@ -59,7 +59,7 @@ INV_IDENT	(({DIGIT}+){IDENT})
 "new"           { return yylval_token(TOK_NEW); }
 
 {NUMBER}        { return yylval_token (TOK_INTCON); }
-{CHAR}     	{ return yylval_token (TOK_CHARCON); }
+{CHAR}          { return yylval_token (TOK_CHARCON); }
 {STRING}        { return yylval_token (TOK_STRINGCON); }
 {IDENT}         { return yylval_token (TOK_IDENT); }
 

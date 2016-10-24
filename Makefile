@@ -65,9 +65,6 @@ lis : test
 again : ${SRCFILES}
 	make --no-print-directory spotless dep ci test lis
 
-checks:
-	/afs/cats.ucsc.edu/courses/cmps104a-wm/bin/checksource ${SOURCES}
-
 cleanyy: 
 	rm yylex.* yyparse.*
 

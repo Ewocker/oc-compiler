@@ -61,13 +61,12 @@ void lexer::include() {
     size_t linenr;
     static char filename[0x1000];
     assert (sizeof filename > strlen (yytext));
-    int scan_rc = sscanf (yytext, "# %zd \"%[^\"]\"", &linenr, filename);
+    int scan_rc = sscanf (yytext, "# %zd \"%[^\"]\"",
+                          &linenr, filename);
     if (scan_rc != 2) {
         errprintf ("%s: invalid directive, ignored\n", yytext);
     }else {
-	//fprintf(tokFile, "# %d %s\n", lexer::filenames.size() ,lexer::filenames.end());
-        //fprintf (tokFile,"%s", lexer::filename(lexer::lloc.filenr)->c_str());
-        fprintf(tokFile, yytext);
+        fprintf(tokFile, "%s \n", yytext);
         if (yy_flex_debug) {
             fprintf (stderr, "--included # %zd \"%s\"\n",
                      linenr, filename);

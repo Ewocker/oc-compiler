@@ -1,2 +1,2 @@
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-deprecated-register -Wno-sign-compare -c lyutils.cpp
-g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc
+flex --outfile=yylex.cpp scanner.l 2>yylex.output
+gmake: *** [yylex.cpp] Error 1
