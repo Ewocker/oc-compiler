@@ -38,7 +38,7 @@ FILE* tokFile;
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
 /*from strtok.cpp*/ void cpp_pclose();
 /*from strtok.cpp*/ void chomp (char* string, char delim);
-/*dump to .tok*/ void scan (string filename);
+/*dump to .tok*/ void scan ();
 //----------------------------------------------------
 
 int main (int argc, char* argv[]){
@@ -61,7 +61,7 @@ int main (int argc, char* argv[]){
     cpp_popen(inFilename);
     
 //    asg2
-    scan (inFilename);  
+    scan ();  
     fclose(tokFile);
 
 //    asg1
@@ -81,7 +81,7 @@ int main (int argc, char* argv[]){
 //---------------------------------------------
 
 /*dump to .tok*/
-void scan (string filename) {
+void scan () {
     
     if (tokFile == NULL) {
         cout << "Error opening file";

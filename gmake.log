@@ -4,9 +4,6 @@ gmake: [yylex.cpp] Error 1 (ignored)
 bison --defines=yyparse.h --output=yyparse.cpp parser.y
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c string_set.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c main.cpp
-main.cpp:84:19: warning: unused parameter ‘filename’ [-Wunused-parameter]
- void scan (string filename) {
-                   ^
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c astree.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c lyutils.cpp
 g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c auxlib.cpp
