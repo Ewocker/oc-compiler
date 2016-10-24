@@ -87,8 +87,6 @@ int main (int argc, char* argv[]){
     
     /* call the "scanner" */
     tokFile = fopen(tokFilename.c_str(), "w");
-    
-    fprintf(tokFile, "a");
 
     fclose(tokFile);
     

@@ -65,6 +65,9 @@ void lexer::include() {
     if (scan_rc != 2) {
         errprintf ("%s: invalid directive, ignored\n", yytext);
     }else {
+	//fprintf(tokFile, "# %d %s\n", lexer::filenames.size() ,lexer::filenames.end());
+        //fprintf (tokFile,"%s", lexer::filename(lexer::lloc.filenr)->c_str());
+        fprintf(tokFile, yytext);
         if (yy_flex_debug) {
             fprintf (stderr, "--included # %zd \"%s\"\n",
                      linenr, filename);
@@ -72,6 +75,7 @@ void lexer::include() {
         lexer::lloc.linenr = linenr - 1;
         lexer::newfilename (filename);
     }
+
 }
 
 void yyerror (const char* message) {

@@ -11,14 +11,15 @@ perl: warning: Please check that your locale settings:
     are supported and installed on your system.
 perl: warning: Falling back to the standard locale ("C").
 checksource: improper character \x09 = ^I (tab)
+   file "lyutils.cpp": 1 errors: line 68
    file "scanner.l": 9 errors: lines 16--17, 39--39, 62
 checksource: line length > 72 characters
    file "Makefile": 1 errors: line 69
    file "cppstrok.cpp": 1 errors: line 73
-   file "lyutils.cpp": 1 errors: line 64
-   file "main.cpp": 2 errors: lines 42, 114
+   file "lyutils.cpp": 3 errors: lines 64, 68--69
+   file "main.cpp": 2 errors: lines 42, 112
    file "scanner.l": 3 errors: lines 7, 14, 16
 checksource: missing newline at end of line
    file "astree.cpp": 1 errors: line 92
    file "cppstrok.cpp": 1 errors: line 109
-checksource: TOTAL COMPLAINTS: 19
+checksource: TOTAL COMPLAINTS: 22
