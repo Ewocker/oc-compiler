@@ -56,16 +56,14 @@ int main (int argc, char* argv[]){
     
     test_access_file(inFilename);
     
-    /* call the "scanner" */
     tokFile = fopen(tokFilename.c_str(), "w");
-
-    fclose(tokFile);
     
     cpp_popen(inFilename);
     
 //    asg2
-    scan (inFilename);
-    
+    scan (inFilename);  
+    fclose(tokFile);
+
 //    asg1
     cpplines(yyin, inFilename);
     
@@ -85,9 +83,6 @@ int main (int argc, char* argv[]){
 /*dump to .tok*/
 void scan (string filename) {
     
-    string tokFilename = change_ext(filename, ".tok");
-    
-    tokFile = fopen (tokFilename.c_str(), "w");
     if (tokFile == NULL) {
         cout << "Error opening file";
     } else {

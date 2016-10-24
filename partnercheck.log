@@ -10,3 +10,11 @@ perl: warning: Please check that your locale settings:
 	LANG = "it_IT.UTF-8"
     are supported and installed on your system.
 perl: warning: Falling back to the standard locale ("C").
+partnercheck: ./PARTNER: format OK:
+username = jiyou
+passwd   = *
+uid      = 48012
+gid      = 100
+gecos    = Jiahua You
+home     = /afs/cats.ucsc.edu/users/k/jiyou
+shell    = /bin/bash
