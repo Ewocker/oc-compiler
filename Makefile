@@ -78,4 +78,4 @@ reset :
 	git clean -f
 
 submit:
-	submit cmps104a-wm.f16 asg1 ${SUBMITION}
+	submit cmps104a-wm.f16 asg2 ${SUBMITION}
