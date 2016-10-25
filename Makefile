@@ -8,7 +8,7 @@ MKFILE   = Makefile
 DEPFILE  = Makefile.dep
 SOURCES  = string_set.cpp main.cpp astree.cpp lyutils.cpp auxlib.cpp
 GENSRCS  = yyparse.cpp yylex.cpp
-HEADERS  = string_set.h oc.h auxlib.h lyutils.h astree.h
+HEADERS  = string_set.h auxlib.h lyutils.h astree.h
 OBJECTS  = ${SOURCES:.cpp=.o} ${GENSRCS:.cpp=.o}
 EXECBIN    = oc
 SRCFILES   = ${HEADERS} ${SOURCES} ${MKFILE}
@@ -78,4 +78,4 @@ reset :
 	git clean -f
 
 submit:
-	submit cmps104a-wm.f16 asg2 ${SUBMITION}
+	submit cmps104a-wm.f16 asg2 ${SUBMIT}
