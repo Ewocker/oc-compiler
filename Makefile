@@ -13,7 +13,7 @@ OBJECTS  = ${SOURCES:.cpp=.o} ${GENSRCS:.cpp=.o}
 EXECBIN    = oc
 SRCFILES   = ${HEADERS} ${SOURCES} ${MKFILE}
 SMALLFILES = ${DEPFILE} foo.oc foo1.oh foo2.oh
-SUBMITS    = ${SRCFILES} README parser.y scanner.l
+SUBMITS    = ${SRCFILES} README parser.y scanner.l PARTNER
 
 LSOURCES = scanner.l
 YSOURCES = parser.y

@@ -1,0 +1,17 @@
+# 1 "test.oc" 
+# 1 "<built-in>" 
+# 1 "<command-line>" 
+# 1 "/usr/include/stdc-predef.h" 1 3 4 
+# 1 "<command-line>" 2 
+# 1 "test.oc" 
+    6  1.001  276 TOK_IDENT       (string1)
+    6  2.001  276 TOK_IDENT       (string2)
+    6  3.001  276 TOK_IDENT       (string3)
+    6  4.001  277 TOK_INTCON      (1)
+    6  4.002   61 '='             (=)
+    6  4.003  277 TOK_INTCON      (2)
+    6  8.001  276 TOK_IDENT       (string4)
+    6  8.009  276 TOK_IDENT       (string5)
+    6  8.017  276 TOK_IDENT       (string6)
+    6  8.025  276 TOK_IDENT       (string7)
+    6  9.002  276 TOK_IDENT       (string8)
