@@ -81,3 +81,8 @@ void yyerror (const char* message) {
     assert (not lexer::filenames.empty());
     errllocprintf (lexer::lloc, "%s\n", message);
 }
+
+astree* new_parseroot (void) {
+    parser::root = new astree (TOK_ROOT, 0, 0, 0, "");
+    return parser::root;
+}

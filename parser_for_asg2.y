@@ -2,9 +2,6 @@
     // Dummy parser for scanner project.
     
     #include <cassert>
-    #include <assert.h>
-	#include <stdlib.h>
-	#include <string.h>
     
     #include "lyutils.h"
     #include "astree.h"
@@ -27,34 +24,10 @@
 %token TOK_POS TOK_NEG TOK_NEWARRAY TOK_TYPEID TOK_FIELD
 %token TOK_ORD TOK_CHR TOK_ROOT
 
-%token TOK_PARAMLIST TOK_PROTOTYPE TOK_FUNCTION TOK_DECLID
-%token TOK_INDEX TOK_NEWSTRING TOK_RETURNVOID TOK_VARDECL  
-
-%right TOK_IF TOK_ELSE
-%right '='
-%left  TOK_EQ TOK_NE TOK_LT TOK_LE TOK_GT TOK_GE
-%left  '+' '-'
-%left  '*' '/' '%'
-%right TOK_POS TOK_NEG '!' TOK_NEW TOK_ORD TOK_CHR
-%left  TOK_ARRAY TOK_FIELD TOK_FUNCTION
-%left  '[' '.'
-
-%nonassoc   '('
-
-%start start
+%start program
 
 %%
 
-start		: program	{ parser::root = $1 }
-			;
-
-program		: program structdef		{ $$ = adopt1($1, $2); }
-			| program function 		{ $$ = adopt1($1, $2); }
-			| program statement		{ $$ = adopt1($1, $2); }
-			| program error '}'		{ $$ = $1; }
-			| program error ';'		{ $$ = $1; }
-			|						{ $$ = new_parseroot();}
-			;
 program : program token | ;
 token   : '(' | ')' | '[' | ']' | '{' | '}' | ';' | ',' | '.'
 | '=' | '+' | '-' | '*' | '/' | '%' | '!' | '<' | '>' 

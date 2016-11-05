@@ -53,22 +53,24 @@ int main (int argc, char* argv[]){
     char *inFilename = argv[optIndex];
     string strFilename = change_ext(inFilename, ".str");
     string tokFilename = change_ext(inFilename, ".tok");
+    string astFilename = change_ext(inFilename, ".ast");
     
     test_access_file(inFilename);
     
-    tokFile = fopen(tokFilename.c_str(), "w");
-    
     cpp_popen(inFilename);
     
+//    asg3
+    gen_astree(astFilename);
+
+
 //    asg2
-    scan ();  
-    fclose(tokFile);
+    scan(tokFilename);  
 
 //    asg1
     cpplines(yyin, inFilename);
-    
-    
     dump_file(strFilename);
+    
+
     cpp_pclose();
     yylex_destroy();
     
@@ -80,11 +82,25 @@ int main (int argc, char* argv[]){
 
 //---------------------------------------------
 
-/*dump to .tok*/
-void scan () {
+
+/*generate astree*/
+void gen_astree (string astFilename) {
     
+    FILE* astfile = fopen (astFilename, "w");
+    if (astfile == NULL) {
+        cerr << "Error opening file";
+        exit (EXIT_FAILURE);
+    }
+    astree::dump(astfile, parser::root);
+    fclose (outfile);
+}
+
+/*dump to .tok*/
+void scan (string tokFilename) {
+    tokFile = fopen(tokFilename.c_str(), "w");
     if (tokFile == NULL) {
-        cout << "Error opening file";
+        cerr << "Error opening file";
+        exit (EXIT_FAILURE);
     } else {
         for (;;) {
             int token = yylex();
@@ -95,17 +111,18 @@ void scan () {
             DEBUGF('m', "token=%d", token);
         }
     }
+    fclose(tokFile);
 }
 
 /*dump to file*/
-void dump_file(string outFilename){
-    FILE* outfile = fopen(outFilename.c_str(), "w");
+void dump_file(string strFilename){
+    FILE* outfile = fopen(strFilename.c_str(), "w");
     if (!outfile){
         fprintf(stderr, "Cannot open file.\n");
         exit(1);
     }
-    string_set::dump(outfile);
-    fclose(outfile);
+    string_set::dump(strfile);
+    fclose(strfile);
 }
 
 /*test file accessibility*/
