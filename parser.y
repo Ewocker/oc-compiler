@@ -55,6 +55,9 @@ program		: program structdef		{ $$ = adopt1($1, $2); }
 			| program error ';'		{ $$ = $1; }
 			|						{ $$ = new_parseroot();}
 			;
+
+structdef	: TOK_STRUCT TOK_IDENT '{' '}'
+
 program : program token | ;
 token   : '(' | ')' | '[' | ']' | '{' | '}' | ';' | ',' | '.'
 | '=' | '+' | '-' | '*' | '/' | '%' | '!' | '<' | '>' 

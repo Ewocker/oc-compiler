@@ -33,6 +33,7 @@ FILE* tokFile;
 /*rewrite ext*/ string change_ext(string inFile, string ext);
 /*test file accessibility*/ void test_access_file(char* file);
 /*dump to file*/void dump_file(string outFilename);
+/*generate astree*/void gen_astree (string astFilename);
 
 /*from strtok.cpp*/ void cpp_popen (const char* filename);
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
@@ -49,26 +50,28 @@ int main (int argc, char* argv[]){
     int optIndex = scan_opt(argc, argv);
     check_input(argc);
     check_suffix(optIndex, argv);
-    
+
+//    output filename
     char *inFilename = argv[optIndex];
+    test_access_file(inFilename);
     string strFilename = change_ext(inFilename, ".str");
     string tokFilename = change_ext(inFilename, ".tok");
     string astFilename = change_ext(inFilename, ".ast");
     
-    test_access_file(inFilename);
     
     cpp_popen(inFilename);
-    
-//    asg3
-    gen_astree(astFilename);
 
-
-//    asg2
-    scan(tokFilename);  
 
 //    asg1
     cpplines(yyin, inFilename);
     dump_file(strFilename);
+
+//    asg2
+    scan(tokFilename);  
+
+//    asg3
+    yyparse();
+    gen_astree(astFilename);
     
 
     cpp_pclose();
@@ -92,7 +95,7 @@ void gen_astree (string astFilename) {
         exit (EXIT_FAILURE);
     }
     astree::dump(astfile, parser::root);
-    fclose (outfile);
+    fclose (astfile);
 }
 
 /*dump to .tok*/
