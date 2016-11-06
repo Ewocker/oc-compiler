@@ -70,8 +70,8 @@ int main (int argc, char* argv[]){
     scan(tokFilename);  
 
 //    asg3
-    yyparse();
-    gen_astree(astFilename);
+    int parse_rc = yyparse();
+    gen_astree(astFilename, parse_rc);
     
 
     cpp_pclose();
@@ -86,14 +86,23 @@ int main (int argc, char* argv[]){
 //---------------------------------------------
 
 
-/*generate astree*/
-void gen_astree (string astFilename) {
-    
+/*generate astree & dump to .ast*/
+void gen_astree (string astFilename, int parse_rc) {
+    if (parse_rc) {
+        errprintf ("parse failed (%d)\n", parse_rc);
+    }else {
+    // example 8 out
+        astree::print (astFilename, parser::root);
+        emit_sm_code (parser::root);
+        delete parser::root;
+    }
+    // my out
     FILE* astfile = fopen (astFilename, "w");
     if (astfile == NULL) {
         cerr << "Error opening file";
         exit (EXIT_FAILURE);
     }
+    printf('\n From now on is my output');
     astree::dump(astfile, parser::root);
     fclose (astfile);
 }
