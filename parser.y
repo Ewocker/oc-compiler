@@ -89,12 +89,14 @@ basetype    : TOK_VOID      { $$ = $1; }
             | TOK_IDENT     { $1->symbol = TOK_TYPEID; $$ = $1; }
             ;
 
-function    : identdecl funcargs ')' block      { $$ =  }
-            | identdecl '(' ')' block           { $2->symbol = TOK_PARAMLIST; $$ = }
+function    : identdecl funcargs ')' block      { $$ = (new astree(TOK_FUNCTION, $1->lloc, ""))->adopt($1, $2, $4); destroy($3); }
+            | identdecl funcargs ')' ';'        { $$ = (new astree(TOK_PROTOTYPE, $1->lloc, ""))->adopt($1, $2); destroy($3, $4); }
+            | identdecl '(' ')' block           { $2->symbol = TOK_PARAMLIST; $$ = (new astree(TOK_FUNCTION, $1->lloc, ""))->adopt($1,$2,$4); destroy($3); }
+            | identdecl '(' ')' ';'             { $2->symbol = TOK_PARAMLIST; $$ = (new astree(TOK_PROTOTYPE, $1->lloc, ""))->adopt($1,$2); destroy($3,$4); }
             ;
 
-funcargs    : funcargs ',' identdecl    { $$ = $1->adopt($3); destroy($2); }
-            | '(' identdecl             { $1->symbol = TOK_PARAMLIST; $$ = $2 ? $1->adopt($2) : $1; }
+funcargs    : funcargs ',' identdecl    { $$ = $1->adopt($3); }
+            | '(' identdecl             { $1->symbol = TOK_PARAMLIST; $$ = $1->adopt($2); }
 
 identdecl   : basetype TOK_IDENT    { $2->symbol = TOK_DECLID; $$ = $1->adopt($2); }
             | basetype TOK_ARRAY TOK_IDENT  { $3->symbol = TOK_DECLID; $$ = $2->adopt($1,$3); }
