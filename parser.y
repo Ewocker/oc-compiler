@@ -74,7 +74,7 @@ stmtseq : stmtseq expr ';'      { destroy ($3); $$ = $1->adopt ($2); }
 structdef   : structcont '}'    { $$ = $1; }
             ;
 
-structcont  : structcont fielddecl ';'      { $$ = $1->adopt($2); destroy($3)}
+structcont  : structcont fielddecl ';'      { $$ = $1->adopt($2); destroy($3); }
             | TOK_STRUCT TOK_IDENT '{'      { $2->symbol = TOK_TYPEID; $$ = $1->adopt($2); }
             ;
 
@@ -117,7 +117,7 @@ statement   : block     { $$ = $1; }
             | expr ';'  { $$ = $1; }
             ;
 
-vardecl     : identdecl '=' expr ';'    { $2->symbol = TOK_VARDECL; $$ = $2->adopt($1, $3); destroy($4) }
+vardecl     : identdecl '=' expr ';'    { $2->symbol = TOK_VARDECL; $$ = $2->adopt($1, $3); destroy($4); }
             ;
 
 while   : TOK_WHILE '(' expr ')' statement  { $$ = $1->adopt($3, $5); destroy($2,$4); }
