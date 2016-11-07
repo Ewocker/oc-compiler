@@ -113,14 +113,14 @@ void scan (string tokFilename) {
         cerr << "Error opening file";
         exit (EXIT_FAILURE);
     } else {
-        for (;;) {
-            int token = yylex();
-            
+        // for (;;) {
+            // int token = yylex();
+            // 
             if (yy_flex_debug) fflush (NULL);
-            if (token == YYEOF) break;
+            // if (token == YYEOF) break;
             
-            DEBUGF('m', "token=%d", token);
-        }
+            // DEBUGF('m', "token=%d", token);
+        // }
     }
     fclose(tokFile);
 }
