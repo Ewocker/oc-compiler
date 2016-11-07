@@ -61,17 +61,16 @@ int main (int argc, char* argv[]){
     
     cpp_popen(inFilename);
 
-
-//    asg1
-    cpplines(yyin, inFilename);
-    dump_file(strFilename);
+//    asg3
+    int parse_rc = yyparse();
+    gen_astree(astFilename, parse_rc);
 
 //    asg2
     scan(tokFilename);  
 
-//    asg3
-    int parse_rc = yyparse();
-    gen_astree(astFilename, parse_rc);
+//    asg1
+    cpplines(yyin, inFilename);
+    dump_file(strFilename);
     
 
     cpp_pclose();
