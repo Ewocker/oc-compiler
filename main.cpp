@@ -59,33 +59,21 @@ int main (int argc, char* argv[]){
     string astFilename = change_ext(inFilename, ".ast");
     
     
-    tokFile = fopen(tokFilename.c_str(), "w");
-    if (tokFile == NULL) {
-        cerr << "Error opening file";
-        exit (EXIT_FAILURE);
-    } 
-
     cpp_popen(inFilename);
-    //    asg3
-    int parse_rc = yyparse();
-    gen_astree(astFilename, parse_rc);
-
-    cpp_pclose();
-    fclose(tokFile)
 
 //    asg2
-    // scan(tokFilename);  
-    
+    scan(tokFilename);  
+
 //    asg1
     cpplines(yyin, inFilename);
     dump_file(strFilename);
-    gen_astree(astFilename, parse_rc);
+    
 //    asg3
-    // int parse_rc = yyparse();
-    // gen_astree(astFilename, parse_rc);
+    int parse_rc = yyparse();
+    gen_astree(astFilename, parse_rc);
 
 
-    // cpp_pclose();
+    cpp_pclose();
     yylex_destroy();
     
     return EXIT_SUCCESS;
@@ -128,7 +116,7 @@ void scan (string tokFilename) {
         // for (;;) {
             // int token = yylex();
             // 
-            if (yy_flex_debug) fflush (NULL);
+            // if (yy_flex_debug) fflush (NULL);
             // if (token == YYEOF) break;
             
             // DEBUGF('m', "token=%d", token);
