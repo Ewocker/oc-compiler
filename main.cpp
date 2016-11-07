@@ -102,7 +102,7 @@ void gen_astree (string astFilename, int parse_rc) {
         exit (EXIT_FAILURE);
     }
     // printf('\n From now on is my output');
-    astree::dump(astfile, parser::root);
+    // astree::dump(astfile, parser::root);
     fclose (astfile);
 }
 

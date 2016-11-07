@@ -17,11 +17,6 @@
 %token-table
 %verbose
 
-
-%initial-action {
-   parser::root = new astree (ROOT, {0, 0, 0}, "<<ROOT>>");
-}
-
 %token  ROOT IDENT NUMBER
 
 // reserved words
@@ -54,21 +49,18 @@
 
 %nonassoc '('
 
-%start program
+%start start
 
 %%
 
-program : stmtseq               { $$ = $1 = nullptr; }
-        | program structdef		{ $$ = $1->adopt($2);}
+start   : program   { $$ = $1; }
+
+program : program structdef		{ $$ = $1->adopt($2);}
         | program function 		{ $$ = $1->adopt($2);}
         | program statement 	{ $$ = $1->adopt($2);}
-        |                       { $$ = new astree(TOK_ROOT, {0,0,0},"");}
-        ;
-
-stmtseq : stmtseq expr ';'      { destroy ($3); $$ = $1->adopt ($2); }
-        | stmtseq error ';'     { destroy ($3); $$ = $1; }
-        | stmtseq ';'           { destroy ($2); $$ = $1; }
-        |                       { $$ = parser::root; }
+        | program error '}'     { $$ = $1; }
+        | program error ';'     { $$ = $1; }
+        |                       { $$ = parser::root = new astree(TOK_ROOT, {0,0,0},""); }
         ;
 
 structdef   : structcont '}'    { $$ = $1; }
