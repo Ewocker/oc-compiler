@@ -88,14 +88,10 @@ int main (int argc, char* argv[]){
 /*generate astree & dump to .ast*/
 void gen_astree (string astFilename) {
     FILE* astfile = fopen (astFilename.c_str(), "w");
-    if (parse_rc) {
-        errprintf ("parse failed (%d)\n", parse_rc);
-    }else {
     // example 8 out
         astree::print (astfile, parser::root);
         // emit_sm_code (parser::root);
         delete parser::root;
-    }
     // my out
     if (astfile == NULL) {
         cerr << "Error opening file";
