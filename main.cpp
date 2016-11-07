@@ -33,13 +33,13 @@ FILE* tokFile;
 /*rewrite ext*/ string change_ext(string inFile, string ext);
 /*test file accessibility*/ void test_access_file(char* file);
 /*dump to file*/void dump_file(string outFilename);
-/*generate astree*/void gen_astree (string astFilename);
+/*generate astree*/void gen_astree (string astFilename, int parse_rc);
 
 /*from strtok.cpp*/ void cpp_popen (const char* filename);
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
 /*from strtok.cpp*/ void cpp_pclose();
 /*from strtok.cpp*/ void chomp (char* string, char delim);
-/*dump to .tok*/ void scan ();
+/*dump to .tok*/ void scan (string tokFilename);
 //----------------------------------------------------
 
 int main (int argc, char* argv[]){
@@ -88,21 +88,21 @@ int main (int argc, char* argv[]){
 
 /*generate astree & dump to .ast*/
 void gen_astree (string astFilename, int parse_rc) {
+    FILE* astfile = fopen (astFilename.c_str(), "w");
     if (parse_rc) {
         errprintf ("parse failed (%d)\n", parse_rc);
     }else {
     // example 8 out
-        astree::print (astFilename, parser::root);
-        emit_sm_code (parser::root);
+        astree::print (astfile, parser::root);
+        // emit_sm_code (parser::root);
         delete parser::root;
     }
     // my out
-    FILE* astfile = fopen (astFilename, "w");
     if (astfile == NULL) {
         cerr << "Error opening file";
         exit (EXIT_FAILURE);
     }
-    printf('\n From now on is my output');
+    // printf('\n From now on is my output');
     astree::dump(astfile, parser::root);
     fclose (astfile);
 }
@@ -128,8 +128,8 @@ void scan (string tokFilename) {
 
 /*dump to file*/
 void dump_file(string strFilename){
-    FILE* outfile = fopen(strFilename.c_str(), "w");
-    if (!outfile){
+    FILE* strfile = fopen(strFilename.c_str(), "w");
+    if (!strfile){
         fprintf(stderr, "Cannot open file.\n");
         exit(1);
     }

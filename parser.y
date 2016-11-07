@@ -17,12 +17,11 @@
 %token-table
 %verbose
 
-%destructor { destroy ($$); } <>
-%printer { astree::dump (yyoutput, $$); } <>
 
 %initial-action {
    parser::root = new astree (ROOT, {0, 0, 0}, "<<ROOT>>");
 }
+
 %token  ROOT IDENT NUMBER
 
 // reserved words
@@ -63,7 +62,7 @@ program : stmtseq               { $$ = $1 = nullptr; }
         | program structdef		{ $$ = $1->adopt($2);}
         | program function 		{ $$ = $1->adopt($2);}
         | program statement 	{ $$ = $1->adopt($2);}
-        |                       { $$ = new_parseroot();}
+        |                       { $$ = new astree(TOK_ROOT, {0,0,0},"");}
         ;
 
 stmtseq : stmtseq expr ';'      { destroy ($3); $$ = $1->adopt ($2); }
@@ -129,15 +128,13 @@ ifelse  : TOK_IF '(' expr ')' statement     { $$ = $1->adopt($3, $5); destroy($2
         ;
 
 return  : TOK_RETURN expr ';'   { $$ = $1->adopt($2); destroy($3); }
-        | TOK_RETURN ';'        { $1->symbol = TOK_RETURNVOID; $$ = $1; destroy($3); }
+        | TOK_RETURN ';'        { $1->symbol = TOK_RETURNVOID; $$ = $1; destroy($2); }
         ;
 
 expr    : expr binop expr       { $$ = $2->adopt ($1, $3); }
         | unop expr             { $$ = $1->adopt($2); }
         | allocator             { $$ = $1; }
         | call                  { $$ = $1; }
-        | '+' expr %prec POS    { $$ = $1->adopt_sym ($2, POS); }
-        | '-' expr %prec NEG    { $$ = $1->adopt_sym ($2, NEG); }
         | '(' expr ')'          { destroy ($1, $3); $$ = $2; }
         | variable              { $$ = $1; }
         | constant              { $$ = $1; }
@@ -211,5 +208,8 @@ bool is_defined_token (int symbol) {
  assert (result != nullptr);
  return result;
  }
+
+ %destructor { destroy ($$); } <>
+%printer { astree::dump (yyoutput, $$); } <>
  */
 
