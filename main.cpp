@@ -33,7 +33,7 @@ FILE* tokFile;
 /*rewrite ext*/ string change_ext(string inFile, string ext);
 /*test file accessibility*/ void test_access_file(char* file);
 /*dump to file*/void dump_file(string outFilename);
-/*generate astree*/void gen_astree (string astFilename);
+/*generate astree*/void gen_astree (string astFilename, int parse_rc);
 
 /*from strtok.cpp*/ void cpp_popen (const char* filename);
 /*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
@@ -69,8 +69,8 @@ int main (int argc, char* argv[]){
     dump_file(strFilename);
     
 //    asg3
-    yyparse();
-    gen_astree(astFilename);
+    int parse_rc = yyparse();
+    gen_astree(astFilename, parse_rc);
 
 
     cpp_pclose();
@@ -86,12 +86,16 @@ int main (int argc, char* argv[]){
 
 
 /*generate astree & dump to .ast*/
-void gen_astree (string astFilename) {
+void gen_astree (string astFilename, int parse_rc) {
     FILE* astfile = fopen (astFilename.c_str(), "w");
+    if (parse_rc) {
+        errprintf ("parse failed (%d)\n", parse_rc);
+    }else {
     // example 8 out
         astree::print (astfile, parser::root);
         // emit_sm_code (parser::root);
         delete parser::root;
+    }
     // my out
     if (astfile == NULL) {
         cerr << "Error opening file";
