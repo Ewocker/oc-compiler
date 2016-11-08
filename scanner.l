@@ -8,7 +8,6 @@
 #define IGNORE(THING)   { }
 
 int yylval_token (int symbol) {
-    printf("asd");
    yylval = new astree (symbol, lexer::lloc, yytext);
    fprintf(tokFile, "%5zu %2zu.%03zu %4u %-15s (%s)\n",
            yylval->lloc.filenr, yylval->lloc.linenr,

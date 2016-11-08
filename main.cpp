@@ -64,21 +64,17 @@ int main (int argc, char* argv[]){
 //    asg2
     scan(tokFilename);  
 
-//    asg1
+//    asg1 this will scan the infile and make EOF so yyparse will not read any.
     //cpplines(yyin, inFilename);
     
 //    asg3
-    // printf("%p\n", yyin);
-    // char x;
-    // fscanf(yyin ,"%c", &x);
-    // printf("%c\n\n\n", x);
     int parse_rc = yyparse();
     gen_astree(astFilename, parse_rc);
     dump_file(strFilename);
 
     cpp_pclose();
     yylex_destroy();
-        fclose(tokFile);
+    fclose(tokFile);
     
     return EXIT_SUCCESS;
 }
