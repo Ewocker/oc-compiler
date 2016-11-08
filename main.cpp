@@ -19,10 +19,10 @@ using namespace std;    // std::string can now be called as string
 #define LINESIZE 1024
 const string cpp_name = "/usr/bin/cpp";
 string cpp_command;
-extern FILE* yyin;     //yyin is the pipe of inFile
+// extern FILE* yyin;     //yyin is the pipe of inFile
 extern int yy_flex_debug;
 extern int yydebug;
-FILE* tokFile;
+
 
 
 /*helper*/  void usage(string program);
@@ -65,16 +65,20 @@ int main (int argc, char* argv[]){
     scan(tokFilename);  
 
 //    asg1
-    cpplines(yyin, inFilename);
-    dump_file(strFilename);
+    //cpplines(yyin, inFilename);
     
 //    asg3
+    // printf("%p\n", yyin);
+    // char x;
+    // fscanf(yyin ,"%c", &x);
+    // printf("%c\n\n\n", x);
     int parse_rc = yyparse();
     gen_astree(astFilename, parse_rc);
-
+    dump_file(strFilename);
 
     cpp_pclose();
     yylex_destroy();
+        fclose(tokFile);
     
     return EXIT_SUCCESS;
 }
@@ -114,15 +118,14 @@ void scan (string tokFilename) {
         exit (EXIT_FAILURE);
     } else {
         // for (;;) {
-            // int token = yylex();
-            // 
-            // if (yy_flex_debug) fflush (NULL);
-            // if (token == YYEOF) break;
+        //     int token = yylex();
             
-            // DEBUGF('m', "token=%d", token);
+        //     if (yy_flex_debug) fflush (NULL);
+        //     if (token == YYEOF) break;
+            
+        //     DEBUGF('m', "token=%d", token);
         // }
     }
-    fclose(tokFile);
 }
 
 /*dump to file*/

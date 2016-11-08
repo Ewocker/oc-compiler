@@ -17,6 +17,10 @@
 %token-table
 %verbose
 
+%initial-action {
+   parser::root = new astree (ROOT, {0, 0, 0}, "<<ROOT>>");
+}
+
 %token  ROOT IDENT NUMBER
 
 // reserved words
@@ -49,11 +53,9 @@
 
 %nonassoc '('
 
-%start start
+%start program
 
 %%
-
-start   : program   { $$ = $1; }
 
 program : program structdef		{ $$ = $1->adopt($2);}
         | program function 		{ $$ = $1->adopt($2);}
