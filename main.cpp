@@ -36,7 +36,7 @@ extern int yydebug;
 /*generate astree*/void gen_astree (string astFilename, int parse_rc);
 
 /*from strtok.cpp*/ void cpp_popen (const char* filename);
-/*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
+///*from strtok.cpp*/ static void cpplines (FILE* pipe, char* filename);
 /*from strtok.cpp*/ void cpp_pclose();
 /*from strtok.cpp*/ void chomp (char* string, char delim);
 /*dump to .tok*/ void scan (string tokFilename);
@@ -64,7 +64,8 @@ int main (int argc, char* argv[]){
 //    asg2
     scan(tokFilename);  
 
-//    asg1 this will scan the infile and make EOF so yyparse will not read any.
+//    asg1 this will scan the infile and 
+//    make EOF so yyparse will not read any.
     //cpplines(yyin, inFilename);
     
 //    asg3
@@ -263,40 +264,40 @@ void cpp_pclose() {
     }
 }
 
-
-/* calls the C pre-processor, tokenizes the output,
- * and adds it to the stringset. */
+/*
+// calls the C pre-processor, tokenizes the output,
+// and adds it to the stringset.
 static void cpplines (FILE* pipe, char* filename){
     int linenr = 1;
     char inputname[LINESIZE];
     strcpy (inputname, filename);
     for (;;) {
-        /* get the line */
+        // get the line 
         char buffer[LINESIZE];
         char* fgets_rc = fgets (buffer, LINESIZE, pipe);
         if (fgets_rc == NULL) break;
-        /* remove the end whitespace */
+        // remove the end whitespace 
         chomp (buffer, '\n');
-        /* check for pre-processor directives */
+        // check for pre-processor directives
         int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
                                 &linenr, filename);
         if (sscanf_rc == 2) {
             continue;
         }
-        /* tokenize the line */
+        // tokenize the line
         char* savepos = NULL;
         char* bufptr = buffer;
         for (int tokenct = 1;; ++tokenct) {
             char* token = strtok_r (bufptr, " \t\n", &savepos);
             bufptr = NULL;
             if (token == NULL) break;
-            /* add to stringset */
+            // add to stringset
             string_set::intern(strdup(token));
         }
         ++linenr;
     }
 }
-
+*/
 // Chomp the last character from a buffer if it is delim.
 void chomp (char* string, char delim) {
     size_t len = strlen (string);
