@@ -13,6 +13,7 @@
 #include "auxlib.h"
 #include "astree.h"
 #include "lyutils.h"
+#include "semantics.h"
 
 using namespace std;    // std::string can now be called as string
 
@@ -57,6 +58,9 @@ int main (int argc, char* argv[]){
     string strFilename = change_ext(inFilename, ".str");
     string tokFilename = change_ext(inFilename, ".tok");
     string astFilename = change_ext(inFilename, ".ast");
+    string symFilename = change_ext(inFilename, ".sym");
+
+    FILE* symfile = fopen (symFilename.c_str(), "w");
     
     
     cpp_popen(inFilename);
@@ -70,6 +74,16 @@ int main (int argc, char* argv[]){
     
 //    asg3
     int parse_rc = yyparse();
+
+
+//oc-compiler asg4
+    int semantic_errors =
+    oc_run_semantics(parser::root, symfile);
+    if (semantic_errors) {
+        errprintf ("typecheck failed (%d)\n", semantic_errors);
+    }
+
+
     gen_astree(astFilename, parse_rc);
     dump_file(strFilename);
 
