@@ -1,39 +1,38 @@
-#include "symtable.h"
+#include "symstack.h"
 #include <iostream>
-#include "astree.h"
 
-symbol* new_symbol(astree* node){
-   symbol* sym = new symbol();
-   sym->filenr = node->lloc.filenr;
-   sym->linenr = node->lloc.linenr;
-   sym->blocknr = node->blocknr;
-   sym->attr = node->attr;
-   sym->parameters = nullptr;
-   return sym;
+void symbol_stack::enter_block(){
+   ++next_block;
+   stack.push_back(nullptr);
 }
 
-void st_insert(symbol_table* st,  astree* node){
-   symbol* sym = new_symbol(node);
-   symbol_entry ent = symbol_entry(
-      const_cast<string*>(node->lexinfo), sym);
-   st->insert(ent);
+void symbol_stack::leave_block(){
+   stack.pop_back();
 }
 
-symbol* st_lookup(symbol_table* st,  astree* node){
-   string* lexinfo = const_cast<string*>(node->lexinfo);
-   if(!st->count(lexinfo))
-      return nullptr;
-   symbol_entry ent = *st->find(const_cast<string*>(node->lexinfo));
-   node->deflinenr = ent.second->linenr;
-   node->deffilenr = ent.second->filenr;
-   node->defoffset = ent.second->offset;
-   return ent.second;
+void symbol_stack::define_ident(astree* node){
+   if(stack.back() == nullptr)
+      stack.back() = new symbol_table;
+   st_insert(stack.back(), node);
 }
 
-void dump(symbol_table* st){
-   cout<<"\tTable size: "<<st->size()<<endl;
+symbol* symbol_stack::lookup_ident(astree* node){
+   for(auto sym_table : stack){
+      if(sym_table == nullptr || sym_table->empty())
+         continue;
+      symbol* sym = st_lookup(sym_table, node);
+      if(sym != nullptr)
+         return sym;
+   }
+   return nullptr;
+}
+
+void symbol_stack::dump(){
    int i = 0;
-   for(auto iter = st->begin(); iter != st->end(); iter++){
-      cout<<"\tEntry "<<i++<<" "<<*(*iter).first<<endl;
+   for(auto sym_table : stack){
+      cout<<"Table "<<i++<<endl;
+      if(sym_table == nullptr)
+         continue;
+      ::dump(sym_table);
    }
 }
