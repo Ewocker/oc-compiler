@@ -130,8 +130,8 @@ void declid_actions(astree* root){
   
   //printf("test2\n");
   symbol* decl = new_symbol(root->attributes,
-                          nullptr, root->filenr, 
-                          root->linenr, root->offset,
+                          nullptr, root->lloc.filenr, 
+                          root->lloc.linenr, root->lloc.offset,
                           block_stack.at(block_stack.size()-1),
                           nullptr);
   root->blocknr = decl->block_nr;
@@ -182,8 +182,8 @@ void block_traverse_old(astree* root){
   if(root->symbol == TOK_DECLID){
      //printf("found declid\n");
      symbol* decl = new_symbol(root->attributes,
-                             nullptr, root->filenr, 
-                             root->linenr, root->offset,
+                             nullptr, root->lloc.filenr, 
+                             root->lloc.linenr, root->lloc.offset,
                              block_stack.at(block_stack.size()-1),
                              nullptr);
      root->blocknr = decl->block_nr;
@@ -228,8 +228,8 @@ void insert_to_structtable_old(astree* root){
   symbol_table* fieldtable = new symbol_table();
   //fieldtable = nullptr; //old version
   symbol* structsym = new_symbol(root->attributes,
-                                fieldtable,root->filenr,
-                                root->linenr, root->offset,
+                                fieldtable,root->lloc.filenr,
+                                root->lloc.linenr, root->lloc.offset,
                                 0,nullptr);
   const string* typeidlex = root->children.at(0)->lexinfo;
 
@@ -259,8 +259,8 @@ void insert_to_structtable_old(astree* root){
 void insert_to_structtable(astree* root){
   symbol_table* fieldtable = new symbol_table();
   symbol* structsym = new_symbol(root->attributes,
-                                fieldtable,root->filenr,
-                                root->linenr, root->offset,
+                                fieldtable,root->lloc.filenr,
+                                root->lloc.linenr, root->lloc.offset,
                                 0,nullptr);
   const string* typeidlex = root->children.at(0)->lexinfo;
   global_structs.insert(symbol_entry(typeidlex,structsym));
@@ -283,8 +283,8 @@ void insert_struct_fields(astree* root, symbol_table* sym){
       inherit_attr(fieldchild,currchild);
       const string* fieldlex = fieldchild->lexinfo;
       symbol* fieldsym = new_symbol(fieldchild->attributes,
-                 nullptr, fieldchild->filenr,fieldchild->linenr, 
-                 fieldchild->offset, 0, nullptr);     
+                 nullptr, fieldchild->lloc.filenr,fieldchild->lloc.linenr, 
+                 fieldchild->lloc.offset, 0, nullptr);     
       //print_symbol(stdout, fieldsym);  
 
       (*sym).insert(symbol_entry(fieldlex, fieldsym));
@@ -314,8 +314,8 @@ void insert_struct_fields_old(astree* root,symbol* sym){
          inherit_attr(fieldchild, currchild);
          const string* fieldlex = fieldchild->lexinfo;
          symbol* fieldsym = new_symbol(fieldchild->attributes,
-                 nullptr, fieldchild->filenr,fieldchild->linenr, 
-                 fieldchild->offset, 0, nullptr);     
+                 nullptr, fieldchild->lloc.filenr,fieldchild->lloc.linenr, 
+                 fieldchild->lloc.offset, 0, nullptr);     
          //print_symbol(stdout, fieldsym);  
 
          fieldtab.insert(symbol_entry(fieldlex, fieldsym));
@@ -357,8 +357,8 @@ void function_ops(astree* root){
   printtosym(root,symfile, root->blocknr);
   astree* declnode = root->children.at(0)->children.at(0);
   symbol* funcsym = new_symbol(declnode->attributes,
-                                nullptr,declnode->filenr,
-                                declnode->linenr, declnode->offset,
+                                nullptr,declnode->lloc.filenr,
+                                declnode->lloc.linenr, declnode->lloc.offset,
                                 0,params);
   assign_params(root, params);
   global_idents.insert(symbol_entry(declnode->lexinfo,funcsym));
@@ -369,8 +369,8 @@ void assign_params(astree* root, vector<symbol*>* par){
   for(unsigned i = 0 ; i < paramnode->children.size(); i++){
     astree* declnode = paramnode->children.at(i)->children.at(0);
     symbol* paramsym = new_symbol(declnode->attributes,
-                                nullptr,declnode->filenr,
-                                declnode->linenr, declnode->offset,
+                                nullptr,declnode->lloc.filenr,
+                                declnode->lloc.linenr, declnode->lloc.offset,
                                 declnode->blocknr,nullptr);
     (*par).push_back(paramsym);
     printtosym(declnode, symfile, declnode->blocknr);
@@ -439,14 +439,14 @@ void printtosym(astree* node, FILE* outfile, int indent){
    }
   if(node->symbol != TOK_FUNCTION){
     fprintf(outfile, "%s (%ld.%ld.%ld) ", 
-            node->lexinfo->c_str(),node->filenr,
-            node->linenr, node->offset);
+            node->lexinfo->c_str(),node->lloc.filenr,
+            node->lloc.linenr, node->lloc.offset);
   }
   else{
     astree* declnode = node->children.at(0)->children.at(0);
     fprintf(outfile, "%s (%ld.%ld.%ld) ",
-            declnode->lexinfo->c_str(),declnode->filenr,
-            declnode->linenr, declnode->offset);
+            declnode->lexinfo->c_str(),declnode->lloc.filenr,
+            declnode->lloc.linenr, declnode->lloc.offset);
   }
   if(!node->attributes[ATTR_field]){
     fprintf(outfile, "{%lu} ", node->blocknr);
@@ -458,8 +458,8 @@ void printtosym(astree* node, FILE* outfile, int indent){
 void printfields(astree* node, FILE* outfile, const char* str){
    fprintf (outfile, "%s", "   ");
    fprintf(outfile, "%s (%ld.%ld.%ld) ", 
-          node->lexinfo->c_str(),node->filenr,
-          node->linenr, node->offset);
+          node->lexinfo->c_str(),node->lloc.filenr,
+          node->lloc.linenr, node->lloc.offset);
    fprintf(outfile, "field {%s} ",str );
    
    printattr(outfile, node->attributes, node);

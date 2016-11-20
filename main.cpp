@@ -13,6 +13,7 @@
 #include "auxlib.h"
 #include "astree.h"
 #include "lyutils.h"
+#include "symtab.h"
 
 using namespace std;    // std::string can now be called as string
 

@@ -21,6 +21,9 @@ struct astree {
     int symbol;               // token code
     location lloc;            // source location
     const string* lexinfo;    // pointer to lexical information
+    attr_bitset attributes;
+    size_t blocknr;
+    symbol_entry* struct_tab_node;
     vector<astree*> children; // children of this n-way node
     
     // Functions.
