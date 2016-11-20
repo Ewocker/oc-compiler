@@ -72,11 +72,11 @@ int main (int argc, char* argv[]){
 //    make EOF so yyparse will not read any.
     //cpplines(yyin, inFilename);
 
-    FILE* symfile = fopen(sym_fname, "w");
+    FILE* symfile = fopen(symFilename, "w");
     symbol_stack* s = new symbol_stack;
     symbol_table* type_table = new symbol_table;
     s->stack.push_back(new symbol_table);
-    type_check(symFilename, parser::root, s, type_table);
+    type_check(symfile, parser::root, s, type_table);
     
 //    asg3
     int parse_rc = yyparse();

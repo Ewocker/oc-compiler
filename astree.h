@@ -9,6 +9,18 @@ using namespace std;
 
 #include "auxlib.h"
 
+struct symbol;
+using symbol_table = unordered_map<string*,symbol*>;
+
+enum { attr_void, attr_bool, attr_char, attr_int, attr_null,
+attr_string, attr_struct, attr_array, attr_function,
+attr_variable, attr_field, attr_typeid, attr_param, attr_lval,
+attr_const, attr_vreg, attr_vaddr, attr_bitset_size,
+};
+
+using attr_bitset = bitset<attr_bitset_size>;
+
+
 struct location {
     size_t filenr;
     size_t linenr;
@@ -39,5 +51,13 @@ struct astree {
 void destroy (astree* tree1, astree* tree2 = nullptr);
 
 void errllocprintf (const location&, const char* format, const char*);
+
+
+astree* new_astree (int symbol, int filenr, int linenr,
+                    int offset, const char* lexinfo);
+astree* new_function (
+      astree* identdecl, astree* paramlist, astree* block);
+astree* new_proto (astree* identdecl, astree* paramlist);
+string enum_bitset(attr_bitset a);
 
 #endif

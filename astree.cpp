@@ -92,3 +92,61 @@ void errllocprintf (const location& lloc, const char* format,
                buffer);
 }
 
+astree* new_function (
+      astree* identdecl, astree* paramlist, astree* block){
+   if(!string(";").compare(*block->lexinfo))
+      return new_proto(identdecl, paramlist);
+   astree* func = new_astree(TOK_FUNCTION, 
+      identdecl->filenr, 
+      identdecl->linenr, 
+      identdecl->offset, "");
+   func = adopt2(func, identdecl, paramlist); 
+   return adopt1(func, block);
+
+}
+
+astree* new_proto (astree* identdecl, astree* paramlist){
+   astree* func = new_astree(TOK_PROTOTYPE, 
+      identdecl->filenr, 
+      identdecl->linenr, 
+      identdecl->offset, "");
+   return adopt2(func, identdecl, paramlist); 
+
+}
+
+
+static string enum_tostring(size_t i){
+   switch(i){
+   case 0: return "void";
+   case 1: return "bool";
+   case 2: return "char";
+   case 3: return "int";
+   case 4: return "null";
+   case 5: return "string";
+   case 6: return "struct";
+   case 7: return "array";
+   case 8: return "function";
+   case 9: return "variable";
+   case 10: return "field";
+   case 11: return "typeid";
+   case 12: return "param";
+   case 13: return "lval";
+   case 14: return "const";
+   case 15: return "vreg";
+   case 16: return "vaddr";
+   case 17: return "bitset_size";
+   }
+   return "invalid_enum";
+}
+
+string enum_bitset(attr_bitset a){
+   string buf;
+   for(int i=0; i<attr_bitset_size; ++i){
+      if(a[i]){
+         buf += enum_tostring(i);
+         buf += " ";
+      }
+   }
+   return buf;
+}
+
