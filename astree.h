@@ -5,6 +5,8 @@
 
 #include <string>
 #include <vector>
+#include <bitset>
+#include <unordered_map>
 using namespace std;
 
 #include "auxlib.h"
@@ -46,6 +48,10 @@ struct astree {
     void dump_tree (FILE*, int depth = 0);
     static void dump (FILE* outfile, astree* tree);
     static void print (FILE* outfile, astree* tree, int depth = 0);
+    size_t blocknr;
+    attr_bitset attr;
+    symbol_table* struct_table;
+    size_t deffilenr, deflinenr, defoffset;
 };
 
 void destroy (astree* tree1, astree* tree2 = nullptr);
