@@ -72,7 +72,7 @@ int main (int argc, char* argv[]){
 //    make EOF so yyparse will not read any.
     //cpplines(yyin, inFilename);
 
-    FILE* symfile = fopen(symFilename, "w");
+    FILE* symfile = fopen(symFilename.c_str(), "w");
     symbol_stack* s = new symbol_stack;
     symbol_table* type_table = new symbol_table;
     s->stack.push_back(new symbol_table);

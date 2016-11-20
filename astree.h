@@ -58,12 +58,6 @@ void destroy (astree* tree1, astree* tree2 = nullptr);
 
 void errllocprintf (const location&, const char* format, const char*);
 
-
-astree* new_astree (int symbol, int filenr, int linenr,
-                    int offset, const char* lexinfo);
-astree* new_function (
-      astree* identdecl, astree* paramlist, astree* block);
-astree* new_proto (astree* identdecl, astree* paramlist);
 string enum_bitset(attr_bitset a);
 
 #endif

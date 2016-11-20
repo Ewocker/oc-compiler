@@ -92,29 +92,6 @@ void errllocprintf (const location& lloc, const char* format,
                buffer);
 }
 
-astree* new_function (
-      astree* identdecl, astree* paramlist, astree* block){
-   if(!string(";").compare(*block->lexinfo))
-      return new_proto(identdecl, paramlist);
-   astree* func = new_astree(TOK_FUNCTION, 
-      identdecl->filenr, 
-      identdecl->linenr, 
-      identdecl->offset, "");
-   func = adopt2(func, identdecl, paramlist); 
-   return adopt1(func, block);
-
-}
-
-astree* new_proto (astree* identdecl, astree* paramlist){
-   astree* func = new_astree(TOK_PROTOTYPE, 
-      identdecl->filenr, 
-      identdecl->linenr, 
-      identdecl->offset, "");
-   return adopt2(func, identdecl, paramlist); 
-
-}
-
-
 static string enum_tostring(size_t i){
    switch(i){
    case 0: return "void";
