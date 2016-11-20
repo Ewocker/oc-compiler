@@ -13,6 +13,7 @@
 #include "auxlib.h"
 #include "astree.h"
 #include "lyutils.h"
+#include "typecheck.h"
 
 using namespace std;    // std::string can now be called as string
 
@@ -22,6 +23,8 @@ string cpp_command;
 // extern FILE* yyin;     //yyin is the pipe of inFile
 extern int yy_flex_debug;
 extern int yydebug;
+
+size_t next_block = 0;
 
 
 
@@ -57,6 +60,7 @@ int main (int argc, char* argv[]){
     string strFilename = change_ext(inFilename, ".str");
     string tokFilename = change_ext(inFilename, ".tok");
     string astFilename = change_ext(inFilename, ".ast");
+    string symFilename = change_ext(inFilename, ".sym");
     
     
     cpp_popen(inFilename);
@@ -67,6 +71,12 @@ int main (int argc, char* argv[]){
 //    asg1 this will scan the infile and 
 //    make EOF so yyparse will not read any.
     //cpplines(yyin, inFilename);
+
+    FILE* symfile = fopen(sym_fname, "w");
+    symbol_stack* s = new symbol_stack;
+    symbol_table* type_table = new symbol_table;
+    s->stack.push_back(new symbol_table);
+    type_check(symFilename, parser::root, s, type_table);
     
 //    asg3
     int parse_rc = yyparse();
