@@ -4,8 +4,8 @@
 
 symbol* new_symbol(astree* node){
    symbol* sym = new symbol();
-   sym->filenr = node->filenr;
-   sym->linenr = node->linenr;
+   sym->filenr = node->lloc.filenr;
+   sym->linenr = node->lloc.linenr;
    sym->blocknr = node->blocknr;
    sym->attr = node->attr;
    sym->parameters = nullptr;

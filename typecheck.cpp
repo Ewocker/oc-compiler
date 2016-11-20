@@ -49,9 +49,9 @@ void print_sym(FILE* outfile, symbol_stack* s,
       fprintf(outfile, 
          "%s (%zu.%zu.%zu) {%zu} %s",
          (node->lexinfo)->c_str(), 
-         node->filenr,
-         node->linenr,
-         node->offset,
+         node->lloc.filenr,
+         node->lloc.linenr,
+         node->lloc.offset,
          node->blocknr,
          enum_bitset(node->attr).c_str());
       }
@@ -59,9 +59,9 @@ void print_sym(FILE* outfile, symbol_stack* s,
       fprintf(outfile, 
          "%s (%zu.%zu.%zu) {%s} %s",
          (node->lexinfo)->c_str(), 
-         node->filenr,
-         node->linenr,
-         node->offset,
+         node->lloc.filenr,
+         node->lloc.linenr,
+         node->lloc.offset,
          last_struct->lexinfo->c_str(),
          enum_bitset(node->attr).c_str()
       );
@@ -134,7 +134,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
    switch(node->symbol){
       case TOK_ROOT:
       case TOK_DECLID:
-      case TOK_PARAM:
+      //case TOK_PARAM:
       case TOK_RETURN:
       case '(':
       case ')':
@@ -164,7 +164,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
             if(sym == nullptr){
                errprintf("Error %d %d %d:"
                   "No matching function %s\n",
-                  node->filenr, node->linenr, node->offset, 
+                  node->lloc.filenr, node->lloc.linenr, node->lloc.offset, 
                   node->children.back()->lexinfo->c_str());
                break;
             }
@@ -237,7 +237,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
          adopt_attrs(node, lchild);
          if(s->lookup_ident(lchild->children[0]))
             errprintf("Error %d %d %d: Duplicate declaration %s\n",
-               node->filenr, node->linenr, node->offset, 
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset, 
                lchild->children[0]->lexinfo->c_str());
          s->define_ident(lchild->children[0]);
          print_sym(outfile, s, type_table, lchild->children[0]);
@@ -249,8 +249,8 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
             sym = st_lookup(type_table, node);
          if(sym == nullptr){
             errprintf("Error %d %d %d: Reference to undefined "
-               "variable %s\n", node->filenr, node->linenr,
-               node->offset, node->lexinfo->c_str());
+               "variable %s\n", node->lloc.filenr, node->lloc.linenr,
+               node->lloc.offset, node->lexinfo->c_str());
             break;
          }
          node->attr = sym->attr;
@@ -285,7 +285,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                return;
             }
             errprintf("Error %d %d %d: Invalid types\n",
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
             break;
          }
       case TOK_NE:
@@ -298,7 +298,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                return;
             }
             errprintf("Error %d %d %d: Invalid types\n",
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
             break;
          }
       case '=':
@@ -312,7 +312,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                return;
             }
             errprintf("Error %d %d %d: Invalid types\n", 
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
             break;
          }
       case '+':
@@ -327,7 +327,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                if(!lchild->attr[attr_int]){
                   errprintf("Error %d %d %d: "
                      "Non int arithmetic operator\n", 
-                     node->filenr, node->linenr, node->offset);
+                     node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
                }
             }
             else{
@@ -335,7 +335,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                   !rchild->attr[attr_int]){
                   errprintf("Error %d %d %d: "
                      "Non int arithmetic operator\n", 
-                     node->filenr, node->linenr, node->offset);
+                     node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
                }
             }
                break;
@@ -350,7 +350,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
                !rchild->attr[attr_int]){
                errprintf("Error %d %d %d: "
                   "Non int with arithmetic operator\n", 
-                  node->filenr, node->linenr, node->offset);
+                  node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
             }
             break;
          }
@@ -360,7 +360,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
          if(!(lchild->attr[attr_bool])){
             errprintf("Error %d %d %d: "
                "Non bool with bool operator\n",
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
          }
          break;
       case TOK_ORD:
@@ -369,7 +369,7 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
          if(lchild->attr[attr_int]) 
             errprintf("Error %d %d %d: "
                "Cannot make non int type into ord\n", 
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
          break;
       case TOK_INTCON:
          node->attr[attr_int] = 1;
@@ -398,11 +398,11 @@ void type_check_body(FILE* outfile, astree* node, symbol_stack* s,
          if(!lchild->attr[attr_bool])
             errprintf("Error %d %d %d: "
                "If or while must be bool\n", 
-               node->filenr, node->linenr, node->offset);
+               node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
          break;
       default:
          errprintf("Invalid symbol %s\n", 
-            get_yytname(node->symbol));
+            parser::get_tname(node->symbol));
    }  
    if(node->attr[attr_lval])
       node->attr[attr_variable] = 1;

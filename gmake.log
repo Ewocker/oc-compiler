@@ -1,0 +1,30 @@
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c typecheck.cpp
+typecheck.cpp: In function ‘void print_sym(FILE*, symbol_stack*, symbol_table*, astree*)’:
+typecheck.cpp:42:9: warning: variable ‘set’ set but not used [-Wunused-but-set-variable]
+    auto set = node->attr;
+         ^
+typecheck.cpp: At global scope:
+typecheck.cpp:40:45: warning: unused parameter ‘s’ [-Wunused-parameter]
+ void print_sym(FILE* outfile, symbol_stack* s, 
+                                             ^
+typecheck.cpp:41:18: warning: unused parameter ‘type_table’ [-Wunused-parameter]
+    symbol_table* type_table, astree* node){
+                  ^
+g++ -std=gnu++14 -g -O0 -Wall -Wextra symstack.o typecheck.o string_set.o main.o astree.o lyutils.o auxlib.o yyparse.o yylex.o -o oc
+typecheck.o: In function `block_recurse(astree*, symbol_stack*)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:79: undefined reference to `symbol_stack::enter_block()'
+typecheck.o: In function `func_recurse(_IO_FILE*, astree*, symbol_stack*, std::unordered_map<std::string*, symbol*, std::hash<std::string*>, std::equal_to<std::string*>, std::allocator<std::pair<std::string* const, symbol*> > >*)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:97: undefined reference to `symbol_stack::define_ident(astree*)'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:102: undefined reference to `symbol_stack::leave_block()'
+typecheck.o: In function `proto_recurse(_IO_FILE*, astree*, symbol_stack*, std::unordered_map<std::string*, symbol*, std::hash<std::string*>, std::equal_to<std::string*>, std::allocator<std::pair<std::string* const, symbol*> > >*)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:111: undefined reference to `symbol_stack::enter_block()'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:117: undefined reference to `symbol_stack::define_ident(astree*)'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:120: undefined reference to `symbol_stack::leave_block()'
+typecheck.o: In function `type_check_body(_IO_FILE*, astree*, symbol_stack*, std::unordered_map<std::string*, symbol*, std::hash<std::string*>, std::equal_to<std::string*>, std::allocator<std::pair<std::string* const, symbol*> > >*, unsigned long)':
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:178: undefined reference to `symbol_stack::enter_block()'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:238: undefined reference to `symbol_stack::lookup_ident(astree*)'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:242: undefined reference to `symbol_stack::define_ident(astree*)'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:246: undefined reference to `symbol_stack::lookup_ident(astree*)'
+/afs/cats.ucsc.edu/users/b/ylin62/Desktop/class/CS104a/oc-compiler/typecheck.cpp:274: undefined reference to `symbol_stack::leave_block()'
+collect2: error: ld returned 1 exit status
+gmake: *** [oc] Error 1
