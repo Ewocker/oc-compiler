@@ -64,3 +64,5 @@ void Symstack::define_ident(astree *node) {
     // insert symbol into the topmost symbol table
     symtable_insert(symtable_stack.back(), node);
 }
+
+

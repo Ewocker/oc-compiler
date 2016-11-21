@@ -71,7 +71,8 @@ void TableManager::check_field(astree *node) {
     if (!field_ident) {
         // error: no such field for typeid ___
         fprintf(stderr, "%zu:%zu:%zu: no such field",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                node->lloc.filenr, node->lloc.linenr,
+                node->lloc.offset);
         errors++;
         return;
     }
@@ -92,7 +93,8 @@ void TableManager::check_array(astree *node) {
         if (get_attrs(node->children[0]).any()) {
             // error: wrong index type
             fprintf(stderr, "%zu:%zu:%zu: wrong index type",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
         } else {
             node->attributes[ATTR_lval] = 1;
@@ -194,7 +196,8 @@ void TableManager::traverse_struct(astree *node) {
     if (symstack->symtable_stack.size() > 1) {
         // error: struct should be global
         fprintf(stderr, "%zu:%zu:%zu: struct should be global",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                node->lloc.filenr, node->lloc.linenr,
+                node->lloc.offset);
         errors++;
         return;
     }
@@ -204,7 +207,8 @@ void TableManager::traverse_struct(astree *node) {
     if (symbol) {
         // error: duplicate symbol declaration
         fprintf(stderr, "%zu:%zu:%zu: duplicate symbol declaration",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                node->lloc.filenr, node->lloc.linenr,
+                node->lloc.offset);
         ++errors;
         return;
     }
@@ -235,7 +239,8 @@ symbol *TableManager::get_declared_symbol(
     if (node->symbol == TOK_VOID && !attrs.test(ATTR_function)) {
         // error: void declaration
         fprintf(stderr, "%zu:%zu:%zu: void declaration",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                node->lloc.filenr, node->lloc.linenr, 
+                node->lloc.offset);
         errors++;
         return nullptr;
     }
@@ -252,7 +257,8 @@ symbol *TableManager::get_declared_symbol(
         if (type_node->symbol == TOK_VOID) {
             // error: void array is not allowed
             fprintf(stderr, "%zu:%zu:%zu: void array is not allowed",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
             return nullptr;
         }
@@ -272,7 +278,8 @@ symbol *TableManager::get_declared_symbol(
         if (!attrs[ATTR_function]) {
             // error: duplicate declaration
             fprintf(stderr, "%zu:%zu:%zu: duplicate declaration",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
             return nullptr;
         }
@@ -323,7 +330,8 @@ void TableManager::traverse_function(astree *node) {
     if (symstack->symtable_stack.size() > 1) {
         // error: function/prototype should be global
         fprintf(stderr, "%zu:%zu:%zu: function should be global",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                node->lloc.filenr, node->lloc.linenr,
+                node->lloc.offset);
         errors++;
         return;
     }
@@ -393,7 +401,8 @@ void TableManager::process_base_type(astree *node) {
                 // error: void array is not allowed
                 fprintf(stderr,
                         "%zu:%zu:%zu: void array is not allowed",
-                        node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                        node->lloc.filenr, node->lloc.linenr, 
+                        node->lloc.offset);
                 errors++;
                 return;
             }
@@ -467,7 +476,8 @@ void TableManager::traverse_ast(astree *node) {
         case TOK_VOID:
             // error: void variable
             fprintf(stderr, "%zu:%zu:%zu: void variable",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
             break;
         case TOK_BOOL: case TOK_CHAR: case TOK_INT: case TOK_STRING:
@@ -612,7 +622,8 @@ void TableManager::check_type(astree *node) {
         case TOK_VOID:
             // error: void declaration
             fprintf(stderr, "%zu:%zu:%zu: void declaration",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
             break;
         case TOK_BOOL: case TOK_CHAR: case TOK_INT:
@@ -629,7 +640,8 @@ void TableManager::process_node(astree *node) {
         if (!symbol) {
             // error: undefined identifier
             fprintf(stderr, "%zu:%zu:%zu: undefined identifier",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+                    node->lloc.filenr, node->lloc.linenr,
+                    node->lloc.offset);
             errors++;
         } else {
             node->sym = symbol;
