@@ -10,6 +10,29 @@
 using namespace std;
 
 class TableManager {
+
+private:
+    int tok2attr(int token);
+    string attrs2str(symbol *s, int exclude);
+    symbol *get_declared_symbol(attr_bitset attrs, symtable *table,
+        astree *node, size_t block_nr);
+    void process_field(symtable *table, astree *node);
+    void traverse_fields(symbol *s, astree *node, astree *type_id_node);
+    void traverse_struct(astree *node);
+    symbol *process_parameter(symtable *table, astree *node);
+    void process_decl(astree *node);
+    void check_field(astree *node);
+    void check_array(astree *node);
+    void process_base_type(astree *node);
+    void check_type(astree *node);
+    void process_node(astree *node);
+    void traverse_next(astree *node);
+    void end_block(astree *node);
+    void traverse_ast(astree *node);
+    void traverse_parameters(symbol *s, astree *node);
+    void traverse_block(astree *node);
+    void traverse_function(astree *node);
+
 public:
     // public properties
     Symstack *symstack;
@@ -35,28 +58,6 @@ public:
 
     // dump symbol table(s) to out file, .sym file
     void print_symtables();
-
-private:
-    int tok2attr(int token);
-    string attrs2str(symbol *s, int exclude);
-    symbol *get_declared_symbol(attr_bitset attrs, symtable *table,
-        astree *node, size_t block_nr);
-    void process_field(symtable *table, astree *node);
-    void traverse_fields(symbol *s, astree *node, astree *type_id_node);
-    void traverse_struct(astree *node);
-    symbol *process_parameter(symtable *table, astree *node);
-    void traverse_parameters(symbol *s, astree *node);
-    void traverse_block(astree *node);
-    void traverse_function(astree *node);
-    void process_decl(astree *node);
-    void check_field(astree *node);
-    void check_array(astree *node);
-    void process_base_type(astree *node);
-    void check_type(astree *node);
-    void process_node(astree *node);
-    void traverse_next(astree *node);
-    void end_block(astree *node);
-    void traverse_ast(astree *node);
 
 };
 

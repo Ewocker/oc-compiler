@@ -1,12 +1,12 @@
 #ifndef __SYMTABLE_H__
 #define __SYMTABLE_H__
 
-#include <vector>
-#include <unordered_map>
 #include <string>
 #include <utility>
 #include <bitset>
 #include <iostream>
+#include <vector>
+#include <unordered_map>
 
 #include "string_set.h"
 #include "lyutils.h"
@@ -21,6 +21,7 @@ struct astree;
 using symtable = unordered_map<string*, symbol*>;
 using symbol_entry = symtable::value_type;
 
+
 /* symbol */
 struct symbol {
     attr_bitset attributes;
@@ -33,17 +34,17 @@ struct symbol {
     const string *type_name;
 };
 
+// symbol table search for type name of the node
+symbol *symtable_search_type_name(symtable *table, astree *node);
 // create a new symbol
 symbol *create_symbol(astree *node);
-
-// insert a new symbol into the symbol table
-symbol *symtable_insert(symtable *table, astree *node);
 
 // symbol table search for lexinfo of the node
 symbol *symtable_search(symtable *table, astree *node);
 
-// symbol table search for type name of the node
-symbol *symtable_search_type_name(symtable *table, astree *node);
+// insert a new symbol into the symbol table
+symbol *symtable_insert(symtable *table, astree *node);
+
 
 
 #endif

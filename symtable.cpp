@@ -1,5 +1,38 @@
 #include "symtable.h"
 
+
+symbol *symtable_search_type_name(symtable *table, astree *node) {
+    if (table == nullptr || node == nullptr) return nullptr;
+
+    string *type_name = (string *)node->type_name;
+    if (!table->count(type_name)) return nullptr;
+    symbol_entry entry = *table->find(type_name);
+
+    return entry.second;
+}
+
+symbol *symtable_search(symtable *table, astree *node) {
+    if (table == nullptr || node == nullptr) return nullptr;
+
+    string *lexinfo = (string *)node->lexinfo;
+    if (!table->count(lexinfo)) return nullptr;
+    symbol_entry entry = *table->find(lexinfo);
+
+    return entry.second;
+}
+
+// returns the inserted symbol
+symbol *symtable_insert(symtable *table, astree *node) {
+    if (table == nullptr || node == nullptr) return nullptr;
+
+    symbol *symbol = create_symbol(node);
+    string *lexinfo = (string *)node->lexinfo;
+    symbol_entry entry = symbol_entry(lexinfo, symbol);
+    table->insert(entry);
+
+    return symbol;
+}
+
 symbol *create_symbol(astree *node) {
     if (node == nullptr) return nullptr;
 
@@ -19,34 +52,3 @@ symbol *create_symbol(astree *node) {
     return new_sym;
 }
 
-// returns the inserted symbol
-symbol *symtable_insert(symtable *table, astree *node) {
-    if (table == nullptr || node == nullptr) return nullptr;
-
-    symbol *symbol = create_symbol(node);
-    string *lexinfo = (string *)node->lexinfo;
-    symbol_entry entry = symbol_entry(lexinfo, symbol);
-    table->insert(entry);
-
-    return symbol;
-}
-
-symbol *symtable_search(symtable *table, astree *node) {
-    if (table == nullptr || node == nullptr) return nullptr;
-
-    string *lexinfo = (string *)node->lexinfo;
-    if (!table->count(lexinfo)) return nullptr;
-    symbol_entry entry = *table->find(lexinfo);
-
-    return entry.second;
-}
-
-symbol *symtable_search_type_name(symtable *table, astree *node) {
-    if (table == nullptr || node == nullptr) return nullptr;
-
-    string *type_name = (string *)node->type_name;
-    if (!table->count(type_name)) return nullptr;
-    symbol_entry entry = *table->find(type_name);
-
-    return entry.second;
-}

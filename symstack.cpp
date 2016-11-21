@@ -1,5 +1,14 @@
 #include "symstack.h"
 
+
+symtable *Symstack::peek() {
+    if (symtable_stack.back() == nullptr) {
+        symtable_stack.back() = new symtable();
+    }
+
+    return symtable_stack.back();
+}
+
 // constructor
 Symstack::Symstack() {
     // initialize next_block to 1
@@ -12,6 +21,14 @@ Symstack::Symstack() {
     symtable_stack.push_back(new symtable);
 }
 
+void Symstack::leave_block() {
+    // pop the topmost symbol table
+    symtable_stack.pop_back();
+
+    // pop the topmost block number
+    block_stack.pop_back();
+}
+
 void Symstack::enter_block() {
     // push nullptr onto the top of the symbol stack
     symtable_stack.push_back(nullptr);
@@ -21,23 +38,6 @@ void Symstack::enter_block() {
 
     // increase next_block
     next_block++;
-}
-
-void Symstack::leave_block() {
-    // pop the topmost symbol table
-    symtable_stack.pop_back();
-
-    // pop the topmost block number
-    block_stack.pop_back();
-}
-
-void Symstack::define_ident(astree *node) {
-    if (symtable_stack.back() == nullptr) {
-        symtable_stack.back() = new symtable;
-    }
-
-    // insert symbol into the topmost symbol table
-    symtable_insert(symtable_stack.back(), node);
 }
 
 symbol *Symstack::search_ident(astree *node) {
@@ -56,10 +56,11 @@ symbol *Symstack::search_ident(astree *node) {
     return nullptr;
 }
 
-symtable *Symstack::peek() {
+void Symstack::define_ident(astree *node) {
     if (symtable_stack.back() == nullptr) {
-        symtable_stack.back() = new symtable();
+        symtable_stack.back() = new symtable;
     }
 
-    return symtable_stack.back();
+    // insert symbol into the topmost symbol table
+    symtable_insert(symtable_stack.back(), node);
 }

@@ -39,20 +39,6 @@ TableManager::TableManager(astree *root, FILE *out) {
     attr_array[ATTR_string] = 1;
 }
 
-// convert TOK_... to ATTR_...
-// e.g. TOK_BOOL -> ATTR_bool
-int TableManager::tok2attr(int token) {
-    switch (token) {
-        case TOK_INT: return ATTR_int;
-        case TOK_BOOL: return ATTR_bool;
-        case TOK_CHAR: return ATTR_char;
-        case TOK_STRING: return ATTR_string;
-        case TOK_ARRAY: return ATTR_array;
-        case TOK_VOID: return ATTR_void;
-        case TOK_TYPEID: return ATTR_struct;
-        default: return -1;
-    }
-}
 
 // attributes to string
 string TableManager::attrs2str(symbol *s, int skip) {
@@ -74,8 +60,175 @@ string TableManager::attrs2str(symbol *s, int skip) {
     return attr_str;
 }
 
+
+void TableManager::check_field(astree *node) {
+    symbol *type_name = symtable_search_type_name(
+        type_names, node->children[0]);
+    if (!type_name) return;
+
+    symbol *field_ident = symtable_search(
+        type_name->fields, node->children[1]);
+    if (!field_ident) {
+        // error: no such field for typeid ___
+        fprintf(stderr, "%zu:%zu:%zu: no such field",
+                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+        errors++;
+        return;
+    }
+
+    node->sym = field_ident;
+    node->children[1]->sym = field_ident;
+
+    node->type_name = field_ident->type_name;
+    node->children[1]->type_name = field_ident->type_name;
+}
+
+void TableManager::check_array(astree *node) {
+    node->attributes[ATTR_lval] = 1;
+    node->attributes[ATTR_vaddr] = 1;
+    node->attributes[ATTR_char] = 1;
+
+    if (!get_attrs(node->children[0]).test(ATTR_string)) {
+        if (get_attrs(node->children[0]).any()) {
+            // error: wrong index type
+            fprintf(stderr, "%zu:%zu:%zu: wrong index type",
+                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+            errors++;
+        } else {
+            node->attributes[ATTR_lval] = 1;
+            node->attributes[ATTR_vaddr] = 1;
+        }
+    }
+}
+
 // print a new line, helper function
 void print_new_line(FILE* out) { fprintf(out, "\n"); }
+
+// convert TOK_... to ATTR_...
+// e.g. TOK_BOOL -> ATTR_bool
+int TableManager::tok2attr(int token) {
+    switch (token) {
+        case TOK_INT: return ATTR_int;
+        case TOK_BOOL: return ATTR_bool;
+        case TOK_CHAR: return ATTR_char;
+        case TOK_STRING: return ATTR_string;
+        case TOK_ARRAY: return ATTR_array;
+        case TOK_VOID: return ATTR_void;
+        case TOK_TYPEID: return ATTR_struct;
+        default: return -1;
+    }
+}
+
+void TableManager::process_field(symtable *table, astree *node) {
+    // set field attributes
+    attr_bitset attrs;
+    attrs[ATTR_field] = 1;
+    attrs[tok2attr(node->symbol)] = 1;
+
+    // get the newly declared symbol
+    symbol *symbol = get_declared_symbol(attrs, table, node, 0);
+
+    // print the field to out file
+    // format: foo (0.1.18) field {node} int
+    // indentation: 3 spaces
+    if (symbol) {
+        fprintf(out, "%*s%s (%zu.%zu.%zu) field {%s} %s\n",
+                (int)scope_nr * 3, "",
+                symbol->node->lexinfo->c_str(),
+                symbol->node->lloc.filenr,
+                symbol->node->lloc.linenr,
+                symbol->node->lloc.offset,
+                current_struct->c_str(),
+                attrs2str(symbol, ATTR_field).c_str());
+    }
+}
+
+void TableManager::traverse_fields(
+    symbol *symbol, astree *node, astree *type_id_node) {
+    scope_nr++;
+
+    // store the current traversing struct name
+    current_struct = type_id_node->lexinfo;
+
+    // loop through all fields
+    for (size_t i = 1; i < node->children.size(); i++) {
+        process_field(symbol->fields, node->children[i]);
+    }
+
+    scope_nr--;
+    current_struct = nullptr;
+    print_new_line(out);
+}
+
+// handle a single paramenter
+symbol *TableManager::process_parameter(symtable *table, astree *node) {
+    // attributes for parameter:
+    // ATTR_param, ATTR_variable, ATTR_lval
+    attr_bitset attrs;
+    attrs[ATTR_param] = 1;
+    attrs[ATTR_variable] = 1;
+    attrs[ATTR_lval] = 1;
+    attrs[tok2attr(node->symbol)] = 1;
+
+    symbol *symbol = get_declared_symbol(attrs, table, node,
+        symstack->block_stack.back());
+
+    if (!symbol) return nullptr;
+
+    // print parameter
+    // format: head (0.2.15) {1} struct "node" variable lval param
+    fprintf(out, "%*s%s (%zu.%zu.%zu) {%zu} %s\n",
+            int(scope_nr) * 3, "",
+            symbol->node->lexinfo->c_str(),
+            symbol->node->lloc.filenr,
+            symbol->node->lloc.linenr,
+            symbol->node->lloc.offset,
+            symbol->block_nr,
+            attrs2str(symbol, ATTR_bitset_size).c_str());
+
+    return symbol;
+}
+
+
+void TableManager::traverse_struct(astree *node) {
+    if (symstack->symtable_stack.size() > 1) {
+        // error: struct should be global
+        fprintf(stderr, "%zu:%zu:%zu: struct should be global",
+                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+        errors++;
+        return;
+    }
+
+    astree *type_id_node = node->children[0];
+    symbol *symbol = symtable_search(type_names, type_id_node);
+    if (symbol) {
+        // error: duplicate symbol declaration
+        fprintf(stderr, "%zu:%zu:%zu: duplicate symbol declaration",
+                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+        ++errors;
+        return;
+    }
+
+    // print struct declaration
+    // format: node (0.1.7) {0} struct "node"
+    fprintf(out, "%s (%zu.%zu.%zu) {0} struct \"%s\"\n",
+            type_id_node->lexinfo->c_str(),
+            node->lloc.filenr, node->lloc.linenr, node->lloc.offset,
+            type_id_node->lexinfo->c_str());
+
+    // insert the newly declared type into type names symbol table
+    symbol = symtable_insert(type_names, type_id_node);
+    symbol->attributes[ATTR_typeid] = 1;
+    symbol->fields = new symtable;
+    symbol->block_nr = 0;
+
+    type_id_node->sym = symbol;
+    type_id_node->block_nr = 0;
+
+    // remember to print a new line at the end of traverse_fields
+    traverse_fields(symbol, node, type_id_node);
+}
+
 
 symbol *TableManager::get_declared_symbol(
     attr_bitset attrs, symtable *table, astree *node, size_t block_nr) {
@@ -136,115 +289,6 @@ symbol *TableManager::get_declared_symbol(
         ident_node->type_name = type_name;
         symbol->type_name = type_name;
     }
-
-    return symbol;
-}
-
-void TableManager::process_field(symtable *table, astree *node) {
-    // set field attributes
-    attr_bitset attrs;
-    attrs[ATTR_field] = 1;
-    attrs[tok2attr(node->symbol)] = 1;
-
-    // get the newly declared symbol
-    symbol *symbol = get_declared_symbol(attrs, table, node, 0);
-
-    // print the field to out file
-    // format: foo (0.1.18) field {node} int
-    // indentation: 3 spaces
-    if (symbol) {
-        fprintf(out, "%*s%s (%zu.%zu.%zu) field {%s} %s\n",
-                (int)scope_nr * 3, "",
-                symbol->node->lexinfo->c_str(),
-                symbol->node->lloc.filenr,
-                symbol->node->lloc.linenr,
-                symbol->node->lloc.offset,
-                current_struct->c_str(),
-                attrs2str(symbol, ATTR_field).c_str());
-    }
-}
-
-void TableManager::traverse_fields(
-    symbol *symbol, astree *node, astree *type_id_node) {
-    scope_nr++;
-
-    // store the current traversing struct name
-    current_struct = type_id_node->lexinfo;
-
-    // loop through all fields
-    for (size_t i = 1; i < node->children.size(); i++) {
-        process_field(symbol->fields, node->children[i]);
-    }
-
-    scope_nr--;
-    current_struct = nullptr;
-    print_new_line(out);
-}
-
-void TableManager::traverse_struct(astree *node) {
-    if (symstack->symtable_stack.size() > 1) {
-        // error: struct should be global
-        fprintf(stderr, "%zu:%zu:%zu: struct should be global",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
-        errors++;
-        return;
-    }
-
-    astree *type_id_node = node->children[0];
-    symbol *symbol = symtable_search(type_names, type_id_node);
-    if (symbol) {
-        // error: duplicate symbol declaration
-        fprintf(stderr, "%zu:%zu:%zu: duplicate symbol declaration",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
-        ++errors;
-        return;
-    }
-
-    // print struct declaration
-    // format: node (0.1.7) {0} struct "node"
-    fprintf(out, "%s (%zu.%zu.%zu) {0} struct \"%s\"\n",
-            type_id_node->lexinfo->c_str(),
-            node->lloc.filenr, node->lloc.linenr, node->lloc.offset,
-            type_id_node->lexinfo->c_str());
-
-    // insert the newly declared type into type names symbol table
-    symbol = symtable_insert(type_names, type_id_node);
-    symbol->attributes[ATTR_typeid] = 1;
-    symbol->fields = new symtable;
-    symbol->block_nr = 0;
-
-    type_id_node->sym = symbol;
-    type_id_node->block_nr = 0;
-
-    // remember to print a new line at the end of traverse_fields
-    traverse_fields(symbol, node, type_id_node);
-}
-
-// handle a single paramenter
-symbol *TableManager::process_parameter(symtable *table, astree *node) {
-    // attributes for parameter:
-    // ATTR_param, ATTR_variable, ATTR_lval
-    attr_bitset attrs;
-    attrs[ATTR_param] = 1;
-    attrs[ATTR_variable] = 1;
-    attrs[ATTR_lval] = 1;
-    attrs[tok2attr(node->symbol)] = 1;
-
-    symbol *symbol = get_declared_symbol(attrs, table, node,
-        symstack->block_stack.back());
-
-    if (!symbol) return nullptr;
-
-    // print parameter
-    // format: head (0.2.15) {1} struct "node" variable lval param
-    fprintf(out, "%*s%s (%zu.%zu.%zu) {%zu} %s\n",
-            int(scope_nr) * 3, "",
-            symbol->node->lexinfo->c_str(),
-            symbol->node->lloc.filenr,
-            symbol->node->lloc.linenr,
-            symbol->node->lloc.offset,
-            symbol->block_nr,
-            attrs2str(symbol, ATTR_bitset_size).c_str());
 
     return symbol;
 }
@@ -335,67 +379,6 @@ void TableManager::traverse_function(astree *node) {
     current_function = nullptr;
 }
 
-void TableManager::process_decl(astree *node) {
-    attr_bitset attrs;
-    attrs[ATTR_variable] = 1;
-    attrs[ATTR_lval] = 1;
-    attrs[tok2attr(node->symbol)] = 1;
-
-    symbol *symbol = get_declared_symbol(
-        attrs, symstack->peek(), node, symstack->block_stack.back());
-    if (!symbol) return;
-
-    // print variable declaration
-    // format: a (0.3.7) {1} int variable lval
-    fprintf(out, "%*s%s (%zu.%zu.%zu) {%zu} %s\n",
-            (int)scope_nr * 3, "",
-            symbol->node->lexinfo->c_str(),
-            symbol->node->lloc.filenr,
-            symbol->node->lloc.linenr,
-            symbol->node->lloc.offset,
-            symbol->block_nr,
-            attrs2str(symbol, ATTR_bitset_size).c_str());
-}
-
-void TableManager::check_field(astree *node) {
-    symbol *type_name = symtable_search_type_name(
-        type_names, node->children[0]);
-    if (!type_name) return;
-
-    symbol *field_ident = symtable_search(
-        type_name->fields, node->children[1]);
-    if (!field_ident) {
-        // error: no such field for typeid ___
-        fprintf(stderr, "%zu:%zu:%zu: no such field",
-                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
-        errors++;
-        return;
-    }
-
-    node->sym = field_ident;
-    node->children[1]->sym = field_ident;
-
-    node->type_name = field_ident->type_name;
-    node->children[1]->type_name = field_ident->type_name;
-}
-
-void TableManager::check_array(astree *node) {
-    node->attributes[ATTR_lval] = 1;
-    node->attributes[ATTR_vaddr] = 1;
-    node->attributes[ATTR_char] = 1;
-
-    if (!get_attrs(node->children[0]).test(ATTR_string)) {
-        if (get_attrs(node->children[0]).any()) {
-            // error: wrong index type
-            fprintf(stderr, "%zu:%zu:%zu: wrong index type",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
-            errors++;
-        } else {
-            node->attributes[ATTR_lval] = 1;
-            node->attributes[ATTR_vaddr] = 1;
-        }
-    }
-}
 
 void TableManager::process_base_type(astree *node) {
     if (node->children.size() == 0) {
@@ -432,6 +415,95 @@ void TableManager::process_base_type(astree *node) {
         }
     }
 }
+
+
+void TableManager::process_decl(astree *node) {
+    attr_bitset attrs;
+    attrs[ATTR_variable] = 1;
+    attrs[ATTR_lval] = 1;
+    attrs[tok2attr(node->symbol)] = 1;
+
+    symbol *symbol = get_declared_symbol(
+        attrs, symstack->peek(), node, symstack->block_stack.back());
+    if (!symbol) return;
+
+    // print variable declaration
+    // format: a (0.3.7) {1} int variable lval
+    fprintf(out, "%*s%s (%zu.%zu.%zu) {%zu} %s\n",
+            (int)scope_nr * 3, "",
+            symbol->node->lexinfo->c_str(),
+            symbol->node->lloc.filenr,
+            symbol->node->lloc.linenr,
+            symbol->node->lloc.offset,
+            symbol->block_nr,
+            attrs2str(symbol, ATTR_bitset_size).c_str());
+}
+
+
+void TableManager::end_block(astree *node) {
+    int symbol = node->symbol;
+
+    if (symbol != TOK_VOID && symbol != TOK_FUNCTION &&
+        symbol != TOK_STRUCT && symbol != TOK_PROTOTYPE) {
+        process_node(node);
+        node->block_nr = symstack->block_stack.back();
+
+        if (symbol == TOK_BLOCK) {
+            scope_nr--;
+            symstack->leave_block();
+        }
+    }
+}
+
+void TableManager::traverse_ast(astree *node) {
+    printf("%d\n", node->symbol);
+    switch (node->symbol) {
+        case TOK_STRUCT:
+            traverse_struct(node);
+            break;
+        case TOK_FUNCTION: case TOK_PROTOTYPE:
+            traverse_function(node);
+            break;
+        case TOK_VOID:
+            // error: void variable
+            fprintf(stderr, "%zu:%zu:%zu: void variable",
+                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
+            errors++;
+            break;
+        case TOK_BOOL: case TOK_CHAR: case TOK_INT: case TOK_STRING:
+        case TOK_TYPEID: case TOK_ARRAY:
+            process_decl(node);
+            break;
+        case '.':
+            traverse_ast(node->children[0]);
+            traverse_ast(node->children[1]);
+            check_field(node);
+            break;
+        case TOK_NEW:
+            process_node(node->children[0]);
+            process_node(node);
+            break;
+        case TOK_NEWARRAY:
+            traverse_ast(node->children[1]);
+            process_node(node->children[0]);
+            break;
+        case TOK_NEWSTRING:
+            traverse_ast(node->children[0]);
+            break;
+        default:
+            traverse_next(node);
+            break;
+    }
+
+    end_block(node);
+}
+
+void TableManager::print_symtables() {
+    symstack = new Symstack();
+    type_names = new symtable;
+    traverse_ast(root);
+}
+
 
 void TableManager::check_type(astree *node) {
     switch (node->symbol) {
@@ -579,68 +651,4 @@ void TableManager::traverse_next(astree *node) {
     for (size_t i = 0; i < node->children.size(); i++) {
         traverse_ast(node->children[i]);
     }
-}
-
-void TableManager::end_block(astree *node) {
-    int symbol = node->symbol;
-
-    if (symbol != TOK_VOID && symbol != TOK_FUNCTION &&
-        symbol != TOK_STRUCT && symbol != TOK_PROTOTYPE) {
-        process_node(node);
-        node->block_nr = symstack->block_stack.back();
-
-        if (symbol == TOK_BLOCK) {
-            scope_nr--;
-            symstack->leave_block();
-        }
-    }
-}
-
-void TableManager::traverse_ast(astree *node) {
-    printf("%d\n", node->symbol);
-    switch (node->symbol) {
-        case TOK_STRUCT:
-            traverse_struct(node);
-            break;
-        case TOK_FUNCTION: case TOK_PROTOTYPE:
-            traverse_function(node);
-            break;
-        case TOK_VOID:
-            // error: void variable
-            fprintf(stderr, "%zu:%zu:%zu: void variable",
-                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
-            errors++;
-            break;
-        case TOK_BOOL: case TOK_CHAR: case TOK_INT: case TOK_STRING:
-        case TOK_TYPEID: case TOK_ARRAY:
-            process_decl(node);
-            break;
-        case '.':
-            traverse_ast(node->children[0]);
-            traverse_ast(node->children[1]);
-            check_field(node);
-            break;
-        case TOK_NEW:
-            process_node(node->children[0]);
-            process_node(node);
-            break;
-        case TOK_NEWARRAY:
-            traverse_ast(node->children[1]);
-            process_node(node->children[0]);
-            break;
-        case TOK_NEWSTRING:
-            traverse_ast(node->children[0]);
-            break;
-        default:
-            traverse_next(node);
-            break;
-    }
-
-    end_block(node);
-}
-
-void TableManager::print_symtables() {
-    symstack = new Symstack();
-    type_names = new symtable;
-    traverse_ast(root);
 }
