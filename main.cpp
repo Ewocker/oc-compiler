@@ -2,12 +2,17 @@
 #include <iostream>
 #include <string>   // for string class
 #include <vector>   // for vector class
+#include <bitset>
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> // for string function ex.strlen()
 #include <unistd.h> // for getopt
+
+#include "symtable.h"
+#include "symstack.h"
+#include "table_manager.h"
 
 #include "string_set.h"
 #include "auxlib.h"
@@ -57,6 +62,7 @@ int main (int argc, char* argv[]){
     string strFilename = change_ext(inFilename, ".str");
     string tokFilename = change_ext(inFilename, ".tok");
     string astFilename = change_ext(inFilename, ".ast");
+    string symFilename = change_ext(inFilename, ".sym");
     
     
     cpp_popen(inFilename);
@@ -72,6 +78,14 @@ int main (int argc, char* argv[]){
     int parse_rc = yyparse();
     gen_astree(astFilename, parse_rc);
     dump_file(strFilename);
+
+
+    FILE* sym = fopen (symFilename.c_str(), "w");
+    TableManager *manager = new TableManager(yyparse_astree, sym);
+    manager->print_symtables();
+    errors += manager->errors;
+    delete manager;
+    fclose(sym);
 
     cpp_pclose();
     yylex_destroy();

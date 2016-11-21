@@ -6,10 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <bitset>
 
 #include "astree.h"
 #include "string_set.h"
 #include "lyutils.h"
+#include "symtable.h"
 
 astree::astree (int symbol_, const location& lloc_, const char* info) {
     symbol = symbol_;
@@ -92,3 +94,12 @@ void errllocprintf (const location& lloc, const char* format,
                buffer);
 }
 
+attr_bitset get_attrs(astree *node) {
+    switch (node->symbol) {
+        case TOK_DECLID: case TOK_IDENT:
+        case TOK_TYPEID: case TOK_FIELD:
+            if (node->sym) return node->sym->attributes;
+        default:
+            return node->attributes;
+    }
+}
