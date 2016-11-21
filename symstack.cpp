@@ -1,8 +1,3 @@
-// Yueqiao Zhang
-// yzhan79
-// Hejia Su
-// hesu
-
 #include "symstack.h"
 
 // constructor

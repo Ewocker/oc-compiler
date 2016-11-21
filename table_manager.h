@@ -1,8 +1,3 @@
-// Yueqiao Zhang
-// yzhan79
-// Hejia Su
-// hesu
-
 #ifndef TABLE_MANAGER_H
 #define TABLE_MANAGER_H
 

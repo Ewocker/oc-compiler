@@ -1,8 +1,3 @@
-//Yueqiao Zhang
-// yzhan79
-// Hejia Su
-// hesu
-
 #ifndef __SYMTABLE_H__
 #define __SYMTABLE_H__
 

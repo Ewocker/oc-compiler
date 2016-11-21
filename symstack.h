@@ -1,8 +1,3 @@
-// Yueqiao Zhang
-// yzhan79
-// Hejia Su
-// hesu
-
 #ifndef SYMSTACK_H
 #define SYMSTACK_H
 
