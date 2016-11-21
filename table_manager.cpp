@@ -284,7 +284,7 @@ void TableManager::traverse_function(astree *node) {
     if (symstack->symtable_stack.size() > 1) {
         // error: function/prototype should be global
         fprintf(stderr, "%zu:%zu:%zu: function should be global",
-                node->filenr, node->linenr, node->offset);
+                node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
         errors++;
         return;
     }
@@ -545,7 +545,7 @@ void TableManager::check_type(astree *node) {
         case TOK_VOID:
             // error: void declaration
             fprintf(stderr, "%zu:%zu:%zu: void declaration",
-                    node->filenr, node->linenr, node->offset);
+                    node->lloc.filenr, node->lloc.linenr, node->lloc.offset);
             errors++;
             break;
         case TOK_BOOL: case TOK_CHAR: case TOK_INT:

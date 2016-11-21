@@ -47,7 +47,12 @@ extern int yydebug;
 /*dump to .tok*/ void scan (string tokFilename);
 //----------------------------------------------------
 
+unsigned errors;
+
 int main (int argc, char* argv[]){
+    // for asg4
+    errors = 0;
+
     //init
     set_execname(argv[0]);
     //==================
@@ -81,7 +86,7 @@ int main (int argc, char* argv[]){
 
 
     FILE* sym = fopen (symFilename.c_str(), "w");
-    TableManager *manager = new TableManager(yyparse_astree, sym);
+    TableManager *manager = new TableManager(parser::root, sym);
     manager->print_symtables();
     errors += manager->errors;
     delete manager;

@@ -13,7 +13,7 @@
 #include <bitset>
 #include <iostream>
 
-#include "stringset.h"
+#include "string_set.h"
 #include "lyutils.h"
 #include "astree.h"
 
