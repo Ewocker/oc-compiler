@@ -81,8 +81,8 @@ int main (int argc, char* argv[]){
     
 //    asg3
     int parse_rc = yyparse();
-    gen_astree(astFilename, parse_rc);
-    dump_file(strFilename);
+    //gen_astree(astFilename, parse_rc);
+  //  dump_file(strFilename);
 
 
     FILE* sym = fopen (symFilename.c_str(), "w");
@@ -91,6 +91,9 @@ int main (int argc, char* argv[]){
     errors += manager->errors;
     delete manager;
     fclose(sym);
+
+    gen_astree(astFilename, parse_rc);
+    dump_file(strFilename);
 
     cpp_pclose();
     yylex_destroy();

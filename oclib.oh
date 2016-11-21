@@ -1,4 +1,4 @@
-// $Id: oclib.oh,v 1.31 2016-09-21 17:31:28-07 - - $
+// $Id: oclib.oh,v 1.32 2016-11-03 15:06:12-07 - - $
 
 #ifndef __OCLIB_OH__
 #define __OCLIB_OH__
@@ -18,6 +18,7 @@ void __exit (int status);
 
 #else
 #define EOF (-1)
+#define char int
 #define bool int
 #define true 1
 #define false 0

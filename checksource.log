@@ -10,3 +10,8 @@ perl: warning: Please check that your locale settings:
 	LANG = "it_IT.UTF-8"
     are supported and installed on your system.
 perl: warning: Falling back to the standard locale ("C").
+checksource: line length > 72 characters
+   file "Makefile": 2 errors: lines 9, 11
+   file "table_manager.cpp": 12 errors: lines 90, 107, 127, 193, 203, 
+        287, 375, 396, 418, 548, 565, 616
+checksource: TOTAL COMPLAINTS: 14
