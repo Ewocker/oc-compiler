@@ -456,7 +456,7 @@ void TableManager::end_block(astree *node) {
 }
 
 void TableManager::traverse_ast(astree *node) {
-    printf("%d\n", node->symbol);
+   // printf("%d\n", node->symbol);
     switch (node->symbol) {
         case TOK_STRUCT:
             traverse_struct(node);
@@ -642,12 +642,12 @@ void TableManager::process_node(astree *node) {
 
 // use as a recursion helper
 void TableManager::traverse_next(astree *node) {
-    printf("In traverse_next\n");
+   // printf("In traverse_next\n");
     if (node->symbol == TOK_BLOCK) {
         scope_nr++;
         symstack->enter_block();
     }
-    printf("node childrens size : %lu \n", node->children.size());
+   // printf("node childrens size : %lu \n", node->children.size());
     for (size_t i = 0; i < node->children.size(); i++) {
         traverse_ast(node->children[i]);
     }
