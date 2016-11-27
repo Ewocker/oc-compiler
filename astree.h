@@ -57,6 +57,9 @@ struct astree {
     struct symbol *sym;
     struct astree *parent;
 
+    // fields for asg5
+    size_t register_nr;      // register number
+    const string *emit_code;
 };
 
 void destroy (astree* tree1, astree* tree2 = nullptr);
