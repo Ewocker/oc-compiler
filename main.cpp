@@ -18,6 +18,7 @@
 #include "auxlib.h"
 #include "astree.h"
 #include "lyutils.h"
+#include "emitter.h"
 
 using namespace std;    // std::string can now be called as string
 
@@ -68,6 +69,7 @@ int main (int argc, char* argv[]){
     string tokFilename = change_ext(inFilename, ".tok");
     string astFilename = change_ext(inFilename, ".ast");
     string symFilename = change_ext(inFilename, ".sym");
+    string oilFilename = change_ext(inFilename, ".oil");
     
     
     cpp_popen(inFilename);
@@ -84,7 +86,7 @@ int main (int argc, char* argv[]){
     //gen_astree(astFilename, parse_rc);
   //  dump_file(strFilename);
 
-
+//    asg4
     FILE* sym = fopen (symFilename.c_str(), "w");
     TableManager *manager = new TableManager(parser::root, sym);
     manager->print_symtables();
@@ -92,8 +94,14 @@ int main (int argc, char* argv[]){
     delete manager;
     fclose(sym);
 
+//    dump .oil file
+    FILE* oil = fopen (oilFilename.c_str(), "w");
+    emit_everything(oil, parser::root, errors);
+    fclose(oil);
+
     gen_astree(astFilename, parse_rc);
     dump_file(strFilename);
+
 
     cpp_pclose();
     yylex_destroy();

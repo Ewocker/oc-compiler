@@ -5,6 +5,7 @@
     #include <assert.h> 
     #include "lyutils.h"
     #include "astree.h"
+    #include "emitter.h"
     
     %}
 
@@ -189,7 +190,8 @@ variable    : TOK_IDENT             { $$ = $1; }
 
 constant    : TOK_INTCON    { $$ = $1; }
             | TOK_CHARCON   { $$ = $1; }
-            | TOK_STRINGCON { $$ = $1; }
+            | TOK_STRINGCON { $$ = $1; 
+            emit_stringcon($1);}
             | TOK_FALSE     { $$ = $1; }
             | TOK_TRUE      { $$ = $1; }
             | TOK_NULL      { $$ = $1; }
