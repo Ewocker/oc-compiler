@@ -7,10 +7,10 @@ VALGRIND   = valgrind --leak-check=full --show-reachable=yes
 MKFILE   = Makefile
 DEPFILE  = Makefile.dep
 SOURCES  = string_set.cpp main.cpp astree.cpp lyutils.cpp auxlib.cpp \
- symtable.cpp symstack.cpp table_manager.cpp
+ symtable.cpp symstack.cpp table_manager.cpp emitter.cpp
 GENSRCS  = yyparse.cpp yylex.cpp
 HEADERS  = string_set.h auxlib.h lyutils.h astree.h \
- symtable.h table_manager.h symstack.h
+ symtable.h table_manager.h symstack.h emitter.h
 OBJECTS  = ${SOURCES:.cpp=.o} ${GENSRCS:.cpp=.o}
 EXECBIN    = oc
 SRCFILES   = ${HEADERS} ${SOURCES} ${MKFILE}
