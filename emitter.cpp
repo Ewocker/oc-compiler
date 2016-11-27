@@ -62,21 +62,21 @@ void emit_stringcon(astree* tree) {
 
 // while and break use the serial number of while token
 void emit_while(astree* tree) {
-    fprintf(out, "while_%lu_%lu_%lu:;\n", tree->linenr, tree->offset,
-        tree->offset);
+    fprintf(out, "while_%lu_%lu_%lu:;\n", tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
     emit(tree->children[0]);
 
     fprintf(out, "%*sif (!%s) goto break_%lu_%lu_%lu;\n", 8, "",
-        emit_code(tree, 0).c_str(), tree->linenr, tree->offset,
-        tree->offset);
+        emit_code(tree, 0).c_str(), tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
 
     emit(tree->children[1]);
 
     fprintf(out, "%*sgoto while_%lu_%lu_%lu;\n", 8, "",
-        tree->linenr, tree->offset, tree->offset);
+        tree->lloc.linenr, tree->lloc.offset, tree->lloc.offset);
 
-    fprintf(out, "break_%lu_%lu_%lu:;\n", tree->linenr, tree->offset,
-        tree->offset);
+    fprintf(out, "break_%lu_%lu_%lu:;\n", tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
 }
 
 // if else statement
@@ -84,19 +84,19 @@ void emit_ifelse(astree* tree) {
     emit(tree->children[0]);
 
     fprintf(out, "%*sif (!%s) goto else_%lu_%lu_%lu;\n", 8, "",
-        emit_code(tree, 0).c_str(), tree->linenr, tree->offset,
-        tree->offset);
+        emit_code(tree, 0).c_str(), tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
     emit(tree->children[1]);
 
-    fprintf(out, "%*sgoto fi_%lu_%lu_%lu;\n", 8, "", tree->linenr,
-        tree->offset, tree->offset);
+    fprintf(out, "%*sgoto fi_%lu_%lu_%lu;\n", 8, "", tree->lloc.linenr,
+        tree->lloc.offset, tree->lloc.offset);
 
-    fprintf(out, "else_%lu_%lu_%lu:;\n", tree->linenr, tree->offset,
-        tree->offset);
+    fprintf(out, "else_%lu_%lu_%lu:;\n", tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
     emit(tree->children[2]);
 
-    fprintf(out, "fi_%lu_%lu_%lu:;\n", tree->linenr, tree->offset,
-        tree->offset);
+    fprintf(out, "fi_%lu_%lu_%lu:;\n", tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
 }
 
 // if without else
@@ -104,12 +104,12 @@ void emit_if(astree* tree) {
     emit(tree->children[0]);
 
     fprintf(out, "%*sif (!%s) goto fi_%lu_%lu_%lu;\n", 8, "",
-        emit_code(tree, 0).c_str(), tree->linenr, tree->offset,
-        tree->offset);
+        emit_code(tree, 0).c_str(), tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
     emit(tree->children[1]);
 
-    fprintf(out, "fi_%lu_%lu_%lu:;\n", tree->linenr, tree->offset,
-        tree->offset);
+    fprintf(out, "fi_%lu_%lu_%lu:;\n", tree->lloc.linenr, tree->lloc.offset,
+        tree->lloc.offset);
 }
 
 // TYPEID IDENT
