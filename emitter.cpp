@@ -151,26 +151,6 @@ void emit_void(astree* tree) {
     }
 }
 
-// field
-void emit_field(astree* tree) {
-    tree->emit_code = new string("f_" + typeid_field(tree) + "_" +
-        lexinfo(tree));
-}
-
-// char IDENT
-void emit_char(astree* tree) {
-    if (!tree->children.size()) {
-        tree->emit_code = tree->lexinfo;
-    } else {
-        tree->emit_code = new string(lexinfo(tree) + " " +
-            emit_code(tree, 0));
-    }
-}
-
-// CHARCON
-void emit_charcon(astree* tree) {
-    tree->emit_code = tree->lexinfo;
-}
 
 // int IDENT
 void emit_int(astree* tree) {
@@ -207,6 +187,28 @@ void emit_intcon(astree* tree) {
 void emit_false(astree* tree) {
     tree->emit_code = new string("0");
 }
+
+// field
+void emit_field(astree* tree) {
+    tree->emit_code = new string("f_" + typeid_field(tree) + "_" +
+        lexinfo(tree));
+}
+
+// char IDENT
+void emit_char(astree* tree) {
+    if (!tree->children.size()) {
+        tree->emit_code = tree->lexinfo;
+    } else {
+        tree->emit_code = new string(lexinfo(tree) + " " +
+            emit_code(tree, 0));
+    }
+}
+
+// CHARCON
+void emit_charcon(astree* tree) {
+    tree->emit_code = tree->lexinfo;
+}
+
 
 // null
 void emit_null(astree* tree) {
@@ -324,68 +326,6 @@ void emit_declid(astree* tree) {
         tree->emit_code = new string("_" + block_nr(tree) + "_" +
             lexinfo(tree));
     }
-}
-
-// array index
-void emit_index(astree* tree) {
-    register_nr_record(tree);
-    string type_string = get_type_name(tree);
-    tree->emit_code = new string("(*a" + register_nr(tree) + ")");
-
-    fprintf(out, "%*s%s* %s = &%s[%s];\n", 8, "", type_string.c_str(),
-        reg_string("a", tree).c_str(), emit_code(tree, 0).c_str(),
-        emit_code(tree, 1).c_str());
-}
-
-// address operator
-void emit_selector(astree* tree) {
-    register_nr_record(tree);
-    string type_string = get_type_name(tree);
-    tree->emit_code = new string("(*a" + register_nr(tree) + ")");
-
-    fprintf(out, "%*s%s %s = &%s->%s;\n", 8, "", type_string.c_str(),
-        reg_string("a", tree).c_str(), emit_code(tree, 0).c_str(),
-        emit_code(tree, 1).c_str());
-}
-
-// function call
-void emit_call(astree* tree) {
-    attr_bitset attrs = get_attrs(tree);
-
-    // non void function
-    if (!attrs.test(ATTR_void)) {
-        register_nr_record(tree);
-        string type_string = get_type_name(tree);
-        string reg_type;
-
-        if (attrs.test(ATTR_bool)) {
-            reg_type = "b";
-        } else if (attrs.test(ATTR_char)) {
-            reg_type = "c";
-        } else if (attrs.test(ATTR_int)) {
-            reg_type = "i";
-        } else if (type_string.find('*')) {
-            reg_type = "p";
-        }
-
-        tree->emit_code = new string(reg_type + register_nr(tree));
-
-        fprintf(out, "%*s%s %s = ", 8, "",
-            type_string.c_str(), tree->emit_code->c_str());
-    } else {
-        fprintf(out, "%*s", 8, "");
-    }
-
-    fprintf(out, "__%s (", lexinfo(tree->children[0]).c_str());
-
-    for (size_t i = 1; i < tree->children.size(); i++) {
-        fprintf(out, "%s", emit_code(tree, i).c_str());
-        if (i != tree->children.size() - 1) {
-            fprintf(out, ", ");
-        }
-    }
-
-    fprintf(out, ");\n");
 }
 
 // global variable declarations
@@ -542,6 +482,68 @@ bool post_skip(astree* node) {
         default:
             return false;
     }
+}
+
+// array index
+void emit_index(astree* tree) {
+    register_nr_record(tree);
+    string type_string = get_type_name(tree);
+    tree->emit_code = new string("(*a" + register_nr(tree) + ")");
+
+    fprintf(out, "%*s%s* %s = &%s[%s];\n", 8, "", type_string.c_str(),
+        reg_string("a", tree).c_str(), emit_code(tree, 0).c_str(),
+        emit_code(tree, 1).c_str());
+}
+
+// address operator
+void emit_selector(astree* tree) {
+    register_nr_record(tree);
+    string type_string = get_type_name(tree);
+    tree->emit_code = new string("(*a" + register_nr(tree) + ")");
+
+    fprintf(out, "%*s%s %s = &%s->%s;\n", 8, "", type_string.c_str(),
+        reg_string("a", tree).c_str(), emit_code(tree, 0).c_str(),
+        emit_code(tree, 1).c_str());
+}
+
+// function call
+void emit_call(astree* tree) {
+    attr_bitset attrs = get_attrs(tree);
+
+    // non void function
+    if (!attrs.test(ATTR_void)) {
+        register_nr_record(tree);
+        string type_string = get_type_name(tree);
+        string reg_type;
+
+        if (attrs.test(ATTR_bool)) {
+            reg_type = "b";
+        } else if (attrs.test(ATTR_char)) {
+            reg_type = "c";
+        } else if (attrs.test(ATTR_int)) {
+            reg_type = "i";
+        } else if (type_string.find('*')) {
+            reg_type = "p";
+        }
+
+        tree->emit_code = new string(reg_type + register_nr(tree));
+
+        fprintf(out, "%*s%s %s = ", 8, "",
+            type_string.c_str(), tree->emit_code->c_str());
+    } else {
+        fprintf(out, "%*s", 8, "");
+    }
+
+    fprintf(out, "__%s (", lexinfo(tree->children[0]).c_str());
+
+    for (size_t i = 1; i < tree->children.size(); i++) {
+        fprintf(out, "%s", emit_code(tree, i).c_str());
+        if (i != tree->children.size() - 1) {
+            fprintf(out, ", ");
+        }
+    }
+
+    fprintf(out, ");\n");
 }
 
 // emit recursively
