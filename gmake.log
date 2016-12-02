@@ -1,2 +1,2 @@
-g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c table_manager.cpp
-g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o symtable.o symstack.o table_manager.o yyparse.o yylex.o -o oc
+g++ -std=gnu++14 -g -O0 -Wall -Wextra -Wno-sign-compare -c emitter.cpp
+g++ -std=gnu++14 -g -O0 -Wall -Wextra string_set.o main.o astree.o lyutils.o auxlib.o symtable.o symstack.o table_manager.o emitter.o yyparse.o yylex.o -o oc
