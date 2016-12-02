@@ -94,14 +94,14 @@ int main (int argc, char* argv[]){
     delete manager;
     fclose(sym);
 
-//    dump .oil file
-    FILE* oil = fopen (oilFilename.c_str(), "w");
-    emit_everything(oil, parser::root, errors);
-    fclose(oil);
 
     gen_astree(astFilename, parse_rc);
     dump_file(strFilename);
 
+//    dump .oil file
+    FILE* oil = fopen (oilFilename.c_str(), "w");
+    emit_everything(oil, parser::root, errors);
+    fclose(oil);
 
     cpp_pclose();
     yylex_destroy();
